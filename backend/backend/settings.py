@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "api", # Name of the application we created
     "rest_framework", # Django REST Framework for building APIs
-    "corsesheaders" # To handle Cross-Origin Resource Sharing (CORS) which allows our frontend to communicate with the backend when they are on different domains or ports.
+    "corsheaders" # To handle Cross-Origin Resource Sharing (CORS) which allows our frontend to communicate with the backend when they are on different domains or ports.
 ]
 
 MIDDLEWARE = [
@@ -72,7 +72,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corseheaders.middleware.CorsMiddleware", # Middleware to handle CORS requests
+    "corsheaders.middleware.CorsMiddleware", # Middleware to handle CORS requests
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -145,3 +145,5 @@ STATIC_URL = 'static/'
 CORS_ALLOW_ALL_ORIGINS = True # Allow all origins for CORS requests during development. In production, you should specify the allowed origins for better security.
 # CORS_ALLOWED_ORIGINS = [ ]
 CORS_ALLOWS_CREDENTIALS = True # Allow cookies to be included in CORS requests, which is necessary for authentication.
+
+AUTH_USER_MODEL = 'api.CustomUser' # Tell Django to use our custom User model instead of the default one. This is necessary because we have added extra fields to the User model and we want to use email as the username field.
