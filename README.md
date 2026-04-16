@@ -4,9 +4,11 @@ For Project version control purposes. Used in ITCC 40 (Web Design), ITCC 42 (SLP
 ## Roadmap
 
 - [ ] Complete RBAC
+    - [ ] Complete Login/Logout and Registration Process for Applicant side
+    - [ ] Complete 
 - [ ] Complete Application Process for Applicant Side
 - [ ] Complete Application Process for Personnel Side
-    - [ ] 
+    - [ ] Records Staff
     - [ ] GIS Specialist 
     - [ ] Drone Inspection
     - [ ] Site Inspection
@@ -21,3 +23,7 @@ For Project version control purposes. Used in ITCC 40 (Web Design), ITCC 42 (SLP
     - [ ] Be able to deactivate account
 - [ ] Connect it to the Postgres Database
 - [ ] Work on Admin Site (We use the pre-built one by Django)
+- [ ] Frontend HAHAHAHAH
+
+For Later in the Development:
+- [ ] Change storage for Access Tokens
