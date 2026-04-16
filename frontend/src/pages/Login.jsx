@@ -1,7 +1,9 @@
+import Form from "../components/form";
+
 function Login () {
-    return <div>Login</div>
+    return (
+        <Form route="/api/token/" method="login" />
+    )
 }
 
 export default Login
-
-// TO DO: Change layout for internal and external users, pero gamit ra sila same page
