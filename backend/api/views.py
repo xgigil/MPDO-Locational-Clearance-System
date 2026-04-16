@@ -5,6 +5,7 @@ from .serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission
 from .models import Admin as CustomAdmin
 from .models import CustomUser, Personnel
+import logging
 
 # Custom permissions
 class isAdmin(BasePermission):
@@ -17,6 +18,10 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer # What kind of data we need to accept to make a new user
     permission_classes = [AllowAny] # Allow anyone to create a user, even if they are not authenticated
     
+    def create(self, request, *args, **kwargs):
+        print("Incoming data:", request.data)  # Log the incoming data
+        return super().create(request, *args, **kwargs)
+
 class CreateAdminView(generics.CreateAPIView):
     queryset = CustomUser.objects.all() # List of all the objects to create a new to make sure the username is unique
     serializer_class = UserSerializer # What kind of data we need to accept to make a new user

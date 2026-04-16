@@ -2,7 +2,6 @@ import React from "react"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Application from "./pages/Application";
 import ApplicationTracker from "./pages/ApplicationTracker";
-import InternalHome from "./pages/InternalHome";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
@@ -29,12 +28,19 @@ function App() {
 
         {/* Internal protected area */}
         <Route 
-          path="/internal"
+          path="/Application"
           element={
             <ProtectedRoute>
               <Application />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route 
+          path="/Application/Tracker"
+          element={
+            <ProtectedRoute>
               <ApplicationTracker />
-              <InternalHome />
             </ProtectedRoute>
           }
         />
@@ -42,7 +48,7 @@ function App() {
         {/* Auth routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
-        <Route path="/register" element={<RegisterandLogout />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Catch-all */}
         <Route path="*" element={<NotFound />} />
