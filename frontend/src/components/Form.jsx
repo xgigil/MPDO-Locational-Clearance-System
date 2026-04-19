@@ -4,6 +4,7 @@ import api from "../api";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Form.css"
+import LoadingIndicator from "./LoadingIndicator";
 
 function Form({ route, method }) {
     const navigate = useNavigate();
@@ -159,8 +160,10 @@ function Form({ route, method }) {
                 </>
             )}
 
-            <button className="form-button" type="submit" disabled={loading}>
-                {loading ? "Processing.." : name}
+            {loading && <LoadingIndicator />}
+
+            <button className="form-button" type="submit">
+                {name}
             </button>
 
             <button className="form-button" type="button" onClick={() => navigate(-1)}>

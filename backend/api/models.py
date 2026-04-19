@@ -37,7 +37,7 @@ class CustomUser(AbstractUser):
     contact_number = models.CharField(max_length=20)
     birthdate = models.DateField(null=True, blank=True)
 
-    objects = CustomUserManager() # Tell Django to use our custom manager for user creation and superuser creation
+    objects = CustomUserManager() # type: ignore # Tell Django to use our custom manager for user creation and superuser creation
 
     def __str__(self):
         return self.email
@@ -116,5 +116,5 @@ class Syslog(models.Model):
     log_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="syslogs")
     action = models.CharField(max_length=100)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    logged_at = models.DateTimeField(auto_now_add=True)
 
