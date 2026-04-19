@@ -3,7 +3,7 @@ import { ACCESS_TOKEN } from "../constants";
 import { useState, useEffect } from "react";
 import "../styles/Home.css";
 
-function Home() {
+function AboutUs() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
 
@@ -22,12 +22,12 @@ function Home() {
 
     return (
         <div className="home-container">
-            <h1>Welcome to Locational Clearance System</h1>
-            <p>Manage your applications and track your progress</p>
+            <h1>About Us</h1>
+            <p>MPDO shdaojfhjksahfuohe</p>
             
             <div className="button-group">
-                <Link to="/about" className="nav-button about-btn">
-                    About Us
+                <Link to="/" className="nav-button home-btn">
+                    Home
                 </Link>
                 {!isLoggedIn ? (
                     <>
@@ -56,4 +56,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default AboutUs;

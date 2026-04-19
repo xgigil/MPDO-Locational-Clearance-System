@@ -1,4 +1,4 @@
-import {Navigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 import api from "../api";
 import { REFRESH_TOKEN, ACCESS_TOKEN } from "../constants";
@@ -8,11 +8,13 @@ import { useState, useEffect } from "react";
 // Frontend protection only
 function ProtectedRoute({children}) { 
     const [isAuthorized, setIsAuthorized] = useState(null);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/immutability
         auth().catch(() => setIsAuthorized(false));
-        }, []);
+        }, [navigate, location]);
 
     // Refresh the access token automathically
     const refreshToken = async () => {
@@ -57,13 +59,20 @@ function ProtectedRoute({children}) {
         }
     }
 
+    useEffect(() => {
+        // If not authorized, redirect to login and replace the history entry
+        if (isAuthorized === false) {
+            navigate("/login", { replace: true });
+        }
+    }, [isAuthorized, navigate]);
+
     // 
     if (isAuthorized === null) {
         return <div>Loading...</div>
     }
 
-    // If the user is authorized, render the children components, otherwise redirect to login page
-    return isAuthorized ? children : <Navigate to="/login" />
+    // If the user is authorized, render the children components
+    return isAuthorized ? children : null;
 }
 
 export default ProtectedRoute;
