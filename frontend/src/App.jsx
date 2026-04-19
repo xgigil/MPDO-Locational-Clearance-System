@@ -5,6 +5,7 @@ import ApplicationTracker from "./pages/ApplicationTracker";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoutes";
 
@@ -25,6 +26,9 @@ function App() {
       <Routes>
         {/* Default landing page */}
         <Route path="/" element={<Home />} />
+
+        {/* About us page */}
+        <Route path="/about" element={<AboutUs />} />
 
         {/* Internal protected area */}
         <Route 
