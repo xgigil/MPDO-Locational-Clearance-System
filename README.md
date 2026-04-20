@@ -135,7 +135,7 @@ npm run dev
 - [ ] Upload Consolidated Evaluation Report (PDF, required in both cases)
   - [ ] Dropzone → `Evaluation_Type = Evaluation_Report`
 - [ ] Receive applications approved by Approving Authority but not endorsed
-  - [ ] Upload Drafted Locational Clearance (PDF)
+  - [ ] Required to Upload Drafted Locational Clearance (PDF)
 
 **MPDO Final Approving Authority**
 - [ ] View Applications (`review_status = approving_authority_review`)
