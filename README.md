@@ -81,6 +81,7 @@ npm run dev
     - Optional (triggered via checkbox):
       - [ ] Deed of Sale
       - [ ] Authorization Letter
+      - [ ] Letter of Exception
   - [ ] Drawing Plan
   - [ ] Application for Building Permit
   - [ ] Cost Estimates
