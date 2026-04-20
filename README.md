@@ -132,7 +132,7 @@ npm run dev
 
 **Draftsman**
 - [ ] View Applications (`review_status = draftsman_review`)
-  - [ ] Access attached Evaluation Reports from previous stages
+  - [ ] Access attached Reports from previous stages
 - [ ] Tag Application
   - [ ] “Endorsed for MPDC Review” → Tracker turns Green
   - [ ] “Not Endorsed for MPDC Review” → Tracker turns Orange
