@@ -92,6 +92,9 @@ npm run dev
 
 For Later in the Development:
 - [ ] Change storage for Access Tokens
+- [ ] Create QR Code to Redirect to Website
+- [ ] Provide in Home Dashboard on Preparing the Required Documents.
+    - [ ] For Zoning Certificate
 
 ---
 
