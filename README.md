@@ -201,7 +201,7 @@ npm run dev
 - [ ] Connect to Supabase
     - [ ] Setup Supabase Tables
     - [ ] Setup Supabase Triggers
-- [ ] Configure Django Admin Site
+- [ ] Configure Django Admin Site (ITCC 16.1 Members)
     - [ ] View all application, even the rejected ones.
 
 ### 🎨 Frontend
