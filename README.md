@@ -87,7 +87,7 @@ npm run dev
 - [ ] Personnel Side
   - [ ] Records Staff
       - [ ] View Application
-          - [ ] Segregated based on Status (Pending, Notice to Comply, Pending Payment, Under Review, Accepted, Rejected)
+          - [ ] Segregated based on Application_Status (Pending, Notice to Comply, Pending Payment, Under Review, Accepted, Rejected)
               - [ ] Pending - For those that were just were just submitted and whose document completion were not checked.
               - [ ] Notice to Comply - For those that are lacking or have submitted the wrong Documents.
                   - [ ] Indicate which Document needs to be Uploaded (must be marked, before submitting Notice to Comply.
@@ -100,7 +100,7 @@ npm run dev
                       - [ ] Inform them to claim physical copy at the MPDO
               - [ ] Rejected - For those that were deemed rejected by the MPDO Approving Authority.
                   - [ ] Recieve Rejected Application from Approving Authority
-                  - [ ] Inform them of Rejection and attach comment for why
+                  - [ ] Inform them of Rejection and attached comment for why
   - [ ] GIS Specialist
       - [ ] View Applications, triggered by review_status = gis_review
       - [ ] Upload PDF copy of the GIS Evaluation Certification
@@ -119,14 +119,39 @@ npm run dev
           - [ ] Confirmed Upload will trigger Application Tracker (Site Review turns Green)
   - [ ] Draftsman
       - [ ] View Applications, triggered by review_status = draftsman_review
-          - [ ] View attached PDF copies of the Evaluation Reports from previous stages
-      - [ ] Upload PDF copy of the Drafted Locational Clearance
-          - [ ] Create drop zone for this. Evaluation_Type = Locational_Clearance
-      - [ ] Upload PDF copy of the Consolidated Evaluation Report
+          - [ ] View attached PDF copies of the Evaluation Reports from Previous Stages
       - [ ] Tag Application as “Endorsed for MPDC review". This will trigger Application Tracker (Draftsman Review turns Green)
-      - [ ] If they see that 
+      - [ ] Tag Application as "Not Endorsed for MPDC review". This will trigger Application Tracker (Draftsman Review turns Orange)
+      - [ ] Upload PDF copy of the Drafted Locational Clearance only if Endorsed
+          - [ ] Create drop zone for this. Evaluation_Type = Locational_Clearance_Draft
+      - [ ] Upload PDF copy of the Consolidated Evaluation Report whether Endorsed or Not Endorsed
+          - [ ] Create drop zone for this. Evaluation_Type = Evaluation_Report
+      - [ ] Receive applications that were approved by Approving authority but not endorsed
+          - [ ] Required to upload PDF copy of the Drafted Locational Clearance
   - [ ] MPDO Final Approving Authority
-      - [ ]  View Applications, triggered by review_status = approving_authority_review)
+      - [ ]  View Applications, triggered by review_status = approving_authority_review
+          - [ ] Attach the uploaded Evaluation Reports from Previous Stages
+              - [ ] Be able to download these reports
+          - [ ] Sorted by Endorsed and Not Endorsed
+      - [ ] For "Not Endorsed for MPDC review" Applications
+          - If Approved
+              - [ ] Upload PDF copy of signed Consolidated Evaluation Reports
+                  - [ ]  Create drop zone for this. Evaluation_Type = Signed_Evaluation_Report
+              - [ ]  Should Trigger application to be Reviewed again by Draftsman
+          - If Rejected
+              - [ ] Tag Application as Rejected (Triggers Application_Status to Rejected)
+              - [ ] Allow comments to be added
+      - [ ]  For "Endored for MPDC review"
+          - If Approved
+              - [ ] Upload PDF copy of signed Consolidated Evaluation Reports if not already uploaded
+                  - [ ] Create drop zone for this. Evaluation_Type = Signed_Evaluation_Report
+              - [ ] Upload PDF copy of signed Signed Locational Clearance
+                  - [ ] Create drop zone for this. Evaluation_Type = Signed_Locational_Clearance
+              - [ ] Upload PDF copy of Zone Certification
+                  - [ ] Create drop zone for this. Evaluation_Type = Zone_Certification
+          - If Rejected
+              - [ ] Tag Application as Rejected (Triggers Application_Status to Rejected)
+              - [ ] Allow comments to be added
 
 ### 📊 Application Tracker
 - [ ] Implement tracking system
@@ -168,6 +193,7 @@ npm run dev
     - [ ] Setup Supabase Tables
     - [ ] Setup Supabase Triggers
 - [ ] Configure Django Admin Site
+    - [ ] View all application, even the rejected ones.
 
 ### 🎨 Frontend
 - [ ] Build React Frontend
