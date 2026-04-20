@@ -113,6 +113,8 @@ npm run dev
 - [ ] Upload GIS Evaluation Certification (PDF)
   - [ ] Dropzone → `Evaluation_Type = GIS_Evaluation`
   - [ ] Checklist: Drone Inspection required? (Yes/No)
+    - If Yes → `review_status = drone_review`
+      - [ ] Add comment for why
     - If No → Confirmed upload triggers Application Tracker (GIS Review turns Green)
 
 **Drone Inspection**
