@@ -163,7 +163,7 @@ npm run dev
     - [ ] Add rejection comments
 
 ### 📊 Application Tracker
-- [ ] Implement tracking system
+- [ ] Implement tracking system (makes use of the review_status attribute of the Application model)
     - [ ] Initial Review 
         - [ ] Yellow if review_status = initial_review
         - [ ] Green if review_status ≠ initial_review
