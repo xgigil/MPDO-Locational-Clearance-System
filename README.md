@@ -87,8 +87,8 @@ npm run dev
 - [ ] Personnel Side
   - [ ] Records Staff
       - [ ] View Application
-          - [ ] Segregated based on Status (Pending, Notice to Comply, Under Review, Accepted, Rejected)
-              - [ ] Pending - For those that were just were just submitted.
+          - [ ] Segregated based on Status (Pending, Notice to Comply, Pending Payment, Under Review, Accepted, Rejected)
+              - [ ] Pending - For those that were just were just submitted and whose document completion were not checked.
               - [ ] Notice to Comply - For those that are lacking or have submitted the wrong Documents.
                   - [ ] Indicate which Document needs to be Uploaded (must be marked, before submitting Notice to Comply.
               - [ ] Under Review - For those that are going through the rest of the application process.
@@ -106,20 +106,25 @@ npm run dev
       - [ ] Upload PDF copy of the GIS Evaluation Certification
           - [ ] Create drop zone for this. Evaluation_Type = GIS_Evaluation
           - [ ] Checklist if need Drone Inspection (Yes or No). Required before upload is confirmed
-              - [ ] If no, Confirmed Upload will trigger Application Tracker (GIS Review)
+              - [ ] If no, Confirmed Upload will trigger Application Tracker (GIS Review turns Green)
   - [ ] Drone Inspection
       - [ ] View Applications, triggered by review_status = drone_review
-          - [ ] GIS Evaluation Certification File must be attached
       - [ ] Upload PDF of the Drone Inspection Results
           - [ ] Create drop zone for this. Evaluation_Type = Drone_Evaluation
-          - [ ] Confirmed Upload will trigger Application Tracker (GIS Review)
+          - [ ] Confirmed Upload will trigger Application Tracker (GIS Review turns Green)
   - [ ] Site Inspection
       - [ ] View Applications, triggered by review_status = site_review
       - [ ] Upload PDF copy of the Site Inspection Report
           - [ ] Create drop zone for this. Evaluation_Type = Site_Evaluation
-          - [ ] Confirmed Upload will trigger Application Tracker (GIS Review)
+          - [ ] Confirmed Upload will trigger Application Tracker (Site Review turns Green)
   - [ ] Draftsman
       - [ ] View Applications, triggered by review_status = draftsman_review
+          - [ ] View attached PDF copies of the Evaluation Reports from previous stages
+      - [ ] Upload PDF copy of the Drafted Locational Clearance
+          - [ ] Create drop zone for this. Evaluation_Type = Locational_Clearance
+      - [ ] Upload PDF copy of the Consolidated Evaluation Report
+      - [ ] Tag Application as “Endorsed for MPDC review". This will trigger Application Tracker (Draftsman Review turns Green)
+      - [ ] If they see that 
   - [ ] MPDO Final Approving Authority
       - [ ]  View Applications, triggered by review_status = approving_authority_review)
 
