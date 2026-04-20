@@ -97,6 +97,7 @@ npm run dev
   - Pending → Just submitted, documents not yet checked
   - Notice to Comply → Missing or incorrect documents
     - [ ] Indicate which document needs to be uploaded before submitting notice
+    - [ ] Add comments
   - Under Review → Ongoing process
     - [ ] Button to mark as ready for next stage
   - Accepted → Approved by MPDO Approving Authority
