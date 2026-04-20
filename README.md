@@ -100,7 +100,8 @@ npm run dev
     - [ ] Button to mark as ready for next stage
   - Accepted → Approved by MPDO Approving Authority
     - [ ] Receive approved application
-        - [ ] With the attached Evaluation_Reports uploaded during the process (except for the ones uploaded by the Draftsman)
+        - [ ] Attached are all the Reports uploaded during the process (except for the ones uploaded by the Draftsman)
+        - [ ] Download attached reports
     - [ ] Notify applicant of acceptance
       - [ ] Attach digital Locational Clearance Certificate
       - [ ] Inform applicant to claim physical copy at MPDO
@@ -111,7 +112,7 @@ npm run dev
 **GIS Specialist**
 - [ ] View Applications (`review_status = gis_review`)
 - [ ] Upload GIS Evaluation Certification (PDF)
-  - [ ] Dropzone → `Evaluation_Type = GIS_Evaluation`
+  - [ ] Dropzone → `Report_Type = GIS_Evaluation`
   - [ ] Checklist: Drone Inspection required? (Yes/No)
     - If Yes → `review_status = drone_review`
       - [ ] Add comment for why
@@ -120,13 +121,13 @@ npm run dev
 **Drone Inspection**
 - [ ] View Applications (`review_status = drone_review`)
 - [ ] Upload Drone Inspection Results (PDF)
-  - [ ] Dropzone → `Evaluation_Type = Drone_Evaluation`
+  - [ ] Dropzone → `Report_Type = Drone_Evaluation`
   - [ ] Confirmed upload triggers Application Tracker (GIS Review turns Green)
 
 **Site Inspection**
 - [ ] View Applications (`review_status = site_review`)
 - [ ] Upload Site Inspection Report (PDF)
-  - [ ] Dropzone → `Evaluation_Type = Site_Evaluation`
+  - [ ] Dropzone → `Report_Type = Site_Evaluation`
   - [ ] Confirmed upload triggers Application Tracker (Site Review turns Green)
 
 **Draftsman**
@@ -136,21 +137,21 @@ npm run dev
   - [ ] “Endorsed for MPDC Review” → Tracker turns Green
   - [ ] “Not Endorsed for MPDC Review” → Tracker turns Orange
 - [ ] Upload Drafted Locational Clearance (PDF, if endorsed)
-  - [ ] Dropzone → `Evaluation_Type = Locational_Clearance_Draft`
+  - [ ] Dropzone → `Report_Type = Locational_Clearance_Draft`
 - [ ] Upload Consolidated Evaluation Report (PDF, required in both cases)
-  - [ ] Dropzone → `Evaluation_Type = Evaluation_Report`
+  - [ ] Dropzone → `Report_Type = Evaluation_Report`
 - [ ] Receive applications approved by Approving Authority but not endorsed
   - [ ] Required to Upload Drafted Locational Clearance (PDF)
 
 **MPDO Final Approving Authority**
 - [ ] View Applications (`review_status = approving_authority_review`)
-  - [ ] Access attached Evaluation Reports from previous stages
-  - [ ] Download reports
+  - [ ] Access attached Reports from previous stages
+  - [ ] Download attached reports
   - [ ] Sort by Endorsed / Not Endorsed
 - **Not Endorsed Applications**
   - If Approved:
     - [ ] Upload signed Consolidated Evaluation Reports (PDF)
-      - Dropzone → `Evaluation_Type = Signed_Evaluation_Report`
+      - Dropzone → `Report_Type = Signed_Evaluation_Report`
     - [ ] Trigger re-review by Draftsman
   - If Rejected:
     - [ ] Tag as Rejected (`Application_Status = Rejected`)
@@ -158,11 +159,11 @@ npm run dev
 - **Endorsed Applications**
   - If Approved:
     - [ ] Upload signed Consolidated Evaluation Reports (PDF, if not already uploaded)
-      - Dropzone → `Evaluation_Type = Signed_Evaluation_Report`
+      - Dropzone → `Report_Type = Signed_Evaluation_Report`
     - [ ] Upload signed Locational Clearance (PDF)
-      - Dropzone → `Evaluation_Type = Signed_Locational_Clearance`
+      - Dropzone → `Report_Type = Signed_Locational_Clearance`
     - [ ] Upload Zone Certification (PDF)
-      - Dropzone → `Evaluation_Type = Zone_Certification`
+      - Dropzone → `Report_Type = Zone_Certification`
   - If Rejected:
     - [ ] Tag as Rejected (`Application_Status = Rejected`)
     - [ ] Add rejection comments
