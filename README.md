@@ -134,8 +134,8 @@ npm run dev
 - [ ] View Applications (`review_status = draftsman_review`)
   - [ ] Access attached Reports from previous stages
 - [ ] Tag Application
-  - [ ] “Endorsed for MPDC Review” → Tracker turns Green
-  - [ ] “Not Endorsed for MPDC Review” → Tracker turns Orange
+  - [ ] “Endorsed for MPDC Review”
+  - [ ] “Not Endorsed for MPDC Review”
 - [ ] Upload Drafted Locational Clearance (PDF, if endorsed)
   - [ ] Dropzone → `Report_Type = Locational_Clearance_Draft`
 - [ ] Upload Consolidated Evaluation Report (PDF, required in both cases)
