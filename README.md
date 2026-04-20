@@ -6,6 +6,7 @@ For Project version control purposes. Used in ITCC 40 (Web Design), ITCC 42 (SLP
 ## Setup Guide
 
 ### Python Backend
+- Must have Python installed in Computer and can be accessed in PATH
 ```bash
 # Create and activate virtual environment
 python -m venv env
@@ -40,10 +41,14 @@ python manage.py runserver
 python manage.py createsuperuser
 ```
 
-### Python Backend
+### Python Frontend
+- Must have Node.js installed in Computer and can be accessed in PATH
 ```bash
 # Initialize project (no need to do this)
 npm create vite@latest frontend --template react
+
+# Enter the Folder
+cd frontend
 
 # Install dependencies
 npm install
