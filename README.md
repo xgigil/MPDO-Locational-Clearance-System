@@ -68,90 +68,99 @@ npm run dev
 - [ ] Personnel: Login/Logout
 
 ### 📝 Application Process
-- [ ] Applicant Side
-    - [ ] Different Upload Dropzone based on Document_Type
-        - [ ] For Zoning Certificate
-            - Required: 
-            - [ ] Lot_Title
-            - [ ] Survey_Plan
-            - [ ] Tax_Declaration
-            - [ ] Tax_Clearance
-            - [ ] Barangay_Construction_Clearance
-            - Optional (Triggered throguh individual checkbox)
-            - [ ] Deed_Of_Sale
-            - [ ] Authorization_Letter
-        - [ ] Drawing_Plan
-        - [ ] Application_For_Building_Permit
-        - [ ] Cost_Estimates
-        - [ ] Structural_Analysis
-- [ ] Personnel Side
-  - [ ] Records Staff
-      - [ ] View Application
-          - [ ] Segregated based on Application_Status (Pending, Notice to Comply, Pending Payment, Under Review, Accepted, Rejected)
-              - [ ] Pending - For those that were just were just submitted and whose document completion were not checked.
-              - [ ] Notice to Comply - For those that are lacking or have submitted the wrong Documents.
-                  - [ ] Indicate which Document needs to be Uploaded (must be marked, before submitting Notice to Comply.
-              - [ ] Under Review - For those that are going through the rest of the application process.
-                  - [ ] Button to click if the Record staff think its ready for the rest of the process.
-              - [ ] Accepted - For those that were deemed approved by the MPDO Approving Authority.
-                  - [ ] Recieve Approved Application from Approving Authority
-                  - [ ] Notify Applicant of Application Acceptance
-                      - [ ] Attach digital copy of the Locational Clearance Certificate before Notifying Applicant
-                      - [ ] Inform them to claim physical copy at the MPDO
-              - [ ] Rejected - For those that were deemed rejected by the MPDO Approving Authority.
-                  - [ ] Recieve Rejected Application from Approving Authority
-                  - [ ] Inform them of Rejection and attached comment for why
-  - [ ] GIS Specialist
-      - [ ] View Applications, triggered by review_status = gis_review
-      - [ ] Upload PDF copy of the GIS Evaluation Certification
-          - [ ] Create drop zone for this. Evaluation_Type = GIS_Evaluation
-          - [ ] Checklist if need Drone Inspection (Yes or No). Required before upload is confirmed
-              - [ ] If no, Confirmed Upload will trigger Application Tracker (GIS Review turns Green)
-  - [ ] Drone Inspection
-      - [ ] View Applications, triggered by review_status = drone_review
-      - [ ] Upload PDF of the Drone Inspection Results
-          - [ ] Create drop zone for this. Evaluation_Type = Drone_Evaluation
-          - [ ] Confirmed Upload will trigger Application Tracker (GIS Review turns Green)
-  - [ ] Site Inspection
-      - [ ] View Applications, triggered by review_status = site_review
-      - [ ] Upload PDF copy of the Site Inspection Report
-          - [ ] Create drop zone for this. Evaluation_Type = Site_Evaluation
-          - [ ] Confirmed Upload will trigger Application Tracker (Site Review turns Green)
-  - [ ] Draftsman
-      - [ ] View Applications, triggered by review_status = draftsman_review
-          - [ ] View attached PDF copies of the Evaluation Reports from Previous Stages
-      - [ ] Tag Application as “Endorsed for MPDC review". This will trigger Application Tracker (Draftsman Review turns Green)
-      - [ ] Tag Application as "Not Endorsed for MPDC review". This will trigger Application Tracker (Draftsman Review turns Orange)
-      - [ ] Upload PDF copy of the Drafted Locational Clearance only if Endorsed
-          - [ ] Create drop zone for this. Evaluation_Type = Locational_Clearance_Draft
-      - [ ] Upload PDF copy of the Consolidated Evaluation Report whether Endorsed or Not Endorsed
-          - [ ] Create drop zone for this. Evaluation_Type = Evaluation_Report
-      - [ ] Receive applications that were approved by Approving authority but not endorsed
-          - [ ] Required to upload PDF copy of the Drafted Locational Clearance
-  - [ ] MPDO Final Approving Authority
-      - [ ]  View Applications, triggered by review_status = approving_authority_review
-          - [ ] Attach the uploaded Evaluation Reports from Previous Stages
-              - [ ] Be able to download these reports
-          - [ ] Sorted by Endorsed and Not Endorsed
-      - [ ] For "Not Endorsed for MPDC review" Applications
-          - If Approved
-              - [ ] Upload PDF copy of signed Consolidated Evaluation Reports
-                  - [ ]  Create drop zone for this. Evaluation_Type = Signed_Evaluation_Report
-              - [ ]  Should Trigger application to be Reviewed again by Draftsman
-          - If Rejected
-              - [ ] Tag Application as Rejected (Triggers Application_Status to Rejected)
-              - [ ] Allow comments to be added
-      - [ ]  For "Endored for MPDC review"
-          - If Approved
-              - [ ] Upload PDF copy of signed Consolidated Evaluation Reports if not already uploaded
-                  - [ ] Create drop zone for this. Evaluation_Type = Signed_Evaluation_Report
-              - [ ] Upload PDF copy of signed Signed Locational Clearance
-                  - [ ] Create drop zone for this. Evaluation_Type = Signed_Locational_Clearance
-              - [ ] Upload PDF copy of Zone Certification
-                  - [ ] Create drop zone for this. Evaluation_Type = Zone_Certification
-          - If Rejected
-              - [ ] Tag Application as Rejected (Triggers Application_Status to Rejected)
-              - [ ] Allow comments to be added
+
+#### Applicant Side
+- [ ] Upload Dropzone based on **Document_Type**
+  - **Zoning Certificate**
+    - Required:
+      - [ ] Lot Title
+      - [ ] Survey Plan
+      - [ ] Tax Declaration
+      - [ ] Tax Clearance
+      - [ ] Barangay Construction Clearance
+    - Optional (triggered via checkbox):
+      - [ ] Deed of Sale
+      - [ ] Authorization Letter
+  - [ ] Drawing Plan
+  - [ ] Application for Building Permit
+  - [ ] Cost Estimates
+  - [ ] Structural Analysis
+
+#### Personnel Side
+
+**Records Staff**
+- [ ] View Applications (segregated by `Application_Status`)
+  - Pending → Just submitted, documents not yet checked
+  - Notice to Comply → Missing or incorrect documents
+    - [ ] Indicate which document needs to be uploaded before submitting notice
+  - Under Review → Ongoing process
+    - [ ] Button to mark as ready for next stage
+  - Accepted → Approved by MPDO Approving Authority
+    - [ ] Receive approved application
+        - [ ] With the attached Evaluation_Reports uploaded during the process (except for the ones uploaded by the Draftsman)
+    - [ ] Notify applicant of acceptance
+      - [ ] Attach digital Locational Clearance Certificate
+      - [ ] Inform applicant to claim physical copy at MPDO
+  - Rejected → Rejected by MPDO Approving Authority
+    - [ ] Receive rejected application
+    - [ ] Notify applicant with rejection comments
+
+**GIS Specialist**
+- [ ] View Applications (`review_status = gis_review`)
+- [ ] Upload GIS Evaluation Certification (PDF)
+  - [ ] Dropzone → `Evaluation_Type = GIS_Evaluation`
+  - [ ] Checklist: Drone Inspection required? (Yes/No)
+    - If No → Confirmed upload triggers Application Tracker (GIS Review turns Green)
+
+**Drone Inspection**
+- [ ] View Applications (`review_status = drone_review`)
+- [ ] Upload Drone Inspection Results (PDF)
+  - [ ] Dropzone → `Evaluation_Type = Drone_Evaluation`
+  - [ ] Confirmed upload triggers Application Tracker (GIS Review turns Green)
+
+**Site Inspection**
+- [ ] View Applications (`review_status = site_review`)
+- [ ] Upload Site Inspection Report (PDF)
+  - [ ] Dropzone → `Evaluation_Type = Site_Evaluation`
+  - [ ] Confirmed upload triggers Application Tracker (Site Review turns Green)
+
+**Draftsman**
+- [ ] View Applications (`review_status = draftsman_review`)
+  - [ ] Access attached Evaluation Reports from previous stages
+- [ ] Tag Application
+  - [ ] “Endorsed for MPDC Review” → Tracker turns Green
+  - [ ] “Not Endorsed for MPDC Review” → Tracker turns Orange
+- [ ] Upload Drafted Locational Clearance (PDF, if endorsed)
+  - [ ] Dropzone → `Evaluation_Type = Locational_Clearance_Draft`
+- [ ] Upload Consolidated Evaluation Report (PDF, required in both cases)
+  - [ ] Dropzone → `Evaluation_Type = Evaluation_Report`
+- [ ] Receive applications approved by Approving Authority but not endorsed
+  - [ ] Upload Drafted Locational Clearance (PDF)
+
+**MPDO Final Approving Authority**
+- [ ] View Applications (`review_status = approving_authority_review`)
+  - [ ] Access attached Evaluation Reports from previous stages
+  - [ ] Download reports
+  - [ ] Sort by Endorsed / Not Endorsed
+- **Not Endorsed Applications**
+  - If Approved:
+    - [ ] Upload signed Consolidated Evaluation Reports (PDF)
+      - Dropzone → `Evaluation_Type = Signed_Evaluation_Report`
+    - [ ] Trigger re-review by Draftsman
+  - If Rejected:
+    - [ ] Tag as Rejected (`Application_Status = Rejected`)
+    - [ ] Add rejection comments
+- **Endorsed Applications**
+  - If Approved:
+    - [ ] Upload signed Consolidated Evaluation Reports (PDF, if not already uploaded)
+      - Dropzone → `Evaluation_Type = Signed_Evaluation_Report`
+    - [ ] Upload signed Locational Clearance (PDF)
+      - Dropzone → `Evaluation_Type = Signed_Locational_Clearance`
+    - [ ] Upload Zone Certification (PDF)
+      - Dropzone → `Evaluation_Type = Zone_Certification`
+  - If Rejected:
+    - [ ] Tag as Rejected (`Application_Status = Rejected`)
+    - [ ] Add rejection comments
 
 ### 📊 Application Tracker
 - [ ] Implement tracking system
