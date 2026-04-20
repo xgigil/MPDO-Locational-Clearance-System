@@ -70,7 +70,7 @@ npm run dev
 ### 📝 Application Process
 
 #### Applicant Side
-- [ ] Upload Dropzone based on **Document_Type**
+- [ ] Upload Dropzone based on **Document_Type** (PDF)
   - **Zoning Certificate**
     - Required:
       - [ ] Lot Title
@@ -85,6 +85,9 @@ npm run dev
   - [ ] Application for Building Permit
   - [ ] Cost Estimates
   - [ ] Structural Analysis
+- [ ] Resubmit Application once receiving Notice to Comply
+  - [ ] Show Upload Dropzone, based on the needed documents to comply
+- [ ] Allow Submission to be triggered only when all available Dropzones have uploaded PDF Files
 
 #### Personnel Side
 
@@ -222,6 +225,7 @@ npm run dev
 - [ ] Change Access Token Storage
 - [ ] Generate QR Code for Website Redirect
 - [ ] Frontend Componenent: List out Required Documents accessed through Home Dashboard
+  - [ ] Show samples of those required documents
 
 ---
 
