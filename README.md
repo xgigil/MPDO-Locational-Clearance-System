@@ -108,6 +108,7 @@ npm run dev
       - [ ] Inform applicant to claim physical copy at MPDO
   - Rejected → Rejected by MPDO Approving Authority
     - [ ] Receive rejected application
+        - [ ] Attached are all the Reports uploaded during the process
     - [ ] Notify applicant with rejection comments
 
 **GIS Specialist**
