@@ -86,6 +86,7 @@ npm run dev
   - [ ] Application for Building Permit
   - [ ] Cost Estimates
   - [ ] Structural Analysis
+  - [ ] Locational Clearance Application Form
 - [ ] Resubmit Application once receiving Notice to Comply
   - [ ] Show Upload Dropzone, based on the needed documents to comply
 - [ ] Allow Submission to be triggered only when all available Dropzones have uploaded PDF Files
