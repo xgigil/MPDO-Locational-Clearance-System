@@ -6,6 +6,7 @@ For Project version control purposes. Used in ITCC 40 (Web Design), ITCC 42 (SLP
 ## Setup Guide
 
 ### Python Backend
+- Must have Python installed in Computer and can be accessed in PATH
 ```bash
 # Create and activate virtual environment
 python -m venv env
@@ -40,10 +41,14 @@ python manage.py runserver
 python manage.py createsuperuser
 ```
 
-### Python Backend
+### Python Frontend
+- Must have Node.js installed in Computer and can be accessed in PATH
 ```bash
 # Initialize project (no need to do this)
 npm create vite@latest frontend --template react
+
+# Enter the Folder
+cd frontend
 
 # Install dependencies
 npm install
@@ -55,40 +60,181 @@ npm run dev
 
 ---
 
-## Roadmap
+## 📌 Project Roadmap
 
-- [ ] Complete RBAC
-    - [X] Complete Login/Logout and Registration Process for Applicant side
-    - [ ] Complete Login/Logout Process for Personnel Side
-- [ ] Complete Application Process for Applicant Side
-- [ ] Complete Application Process for Personnel Side
-    - [ ] Records Staff
-    - [ ] GIS Specialist 
-    - [ ] Drone Inspection
-    - [ ] Site Inspection
-    - [ ] Draftsman
-    - [ ] MPDO Final Approving Authority
-- [ ] Complete Application Tracker
-- [ ] Complete Account Management    
-    - [ ] Set Up Account Managemet for Admin
-        - [ ] Create accounts for Personnel
-        - [ ] Set Admin Privileges
-        - [ ] Create Admin accounts
-    - [ ] Set Up Account Management for Applicant
-        - [X] Be able to create account
-        - [ ] Be able to edit account details
-            - [ ] Edit serializer
-            - [ ] Edit views
-        - [ ] Be able to deactivate account
-- [ ] Connect it to the Postgres Database
-- [ ] Work on Admin Site (We use the pre-built one by Django)
-- [ ] Frontend HAHAHAHAH
+### 🔐 Role-Based Access Control (RBAC)
+- [ ] Applicant: Login/Logout & Registration
+    - [ ] Remove barangay and address
+- [ ] Personnel: Login/Logout
+
+### 📝 Application Process
+
+#### Applicant Side
+- [ ] Upload Dropzone based on **Document_Type** (PDF)
+  - **Zoning Certificate**
+    - Required:
+      - [ ] Lot Title
+      - [ ] Survey Plan
+      - [ ] Tax Declaration
+      - [ ] Tax Clearance
+      - [ ] Barangay Construction Clearance
+    - Optional (triggered via checkbox):
+      - [ ] Deed of Sale
+      - [ ] Authorization Letter
+      - [ ] Letter of Exception
+  - [ ] Drawing Plan
+  - [ ] Application for Building Permit
+  - [ ] Cost Estimates
+  - [ ] Structural Analysis
+  - [ ] Locational Clearance Application Form
+- [ ] Resubmit Application once receiving Notice to Comply
+  - [ ] Show Upload Dropzone, based on the needed documents to comply
+- [ ] Allow Submission to be triggered only when all available Dropzones have uploaded PDF Files
+
+#### Personnel Side
+
+**Records Staff**
+- [ ] View Applications (segregated by `Application_Status`)
+  - Pending → Just submitted, documents not yet checked
+  - Notice to Comply → Missing or incorrect documents
+    - [ ] Indicate which document needs to be uploaded before submitting notice
+    - [ ] Add comments
+  - Under Review → Ongoing process
+    - [ ] Button to mark as ready for next stage
+  - Accepted → Approved by MPDO Approving Authority
+    - [ ] Receive approved application
+        - [ ] Attached are all the Reports uploaded during the process (except for the ones uploaded by the Draftsman)
+        - [ ] Download attached reports
+    - [ ] Notify applicant of acceptance
+      - [ ] Attach digital Locational Clearance Certificate
+      - [ ] Inform applicant to claim physical copy at MPDO
+  - Rejected → Rejected by MPDO Approving Authority
+    - [ ] Receive rejected application
+        - [ ] Attached are all the Reports uploaded during the process
+    - [ ] Notify applicant with rejection comments
+
+**GIS Specialist**
+- [ ] View Applications (`review_status = gis_review`)
+- [ ] Upload GIS Evaluation Certification (PDF)
+  - [ ] Dropzone → `Report_Type = GIS_Evaluation`
+  - [ ] Checklist: Drone Inspection required? (Yes/No)
+    - If Yes → `review_status = drone_review`
+      - [ ] Add comment for why
+    - If No → Confirmed upload triggers Application Tracker (GIS Review turns Green)
+
+**Drone Inspection**
+- [ ] View Applications (`review_status = drone_review`)
+- [ ] Upload Drone Inspection Results (PDF)
+  - [ ] Dropzone → `Report_Type = Drone_Evaluation`
+  - [ ] Confirmed upload triggers Application Tracker (GIS Review turns Green)
+
+**Site Inspection**
+- [ ] View Applications (`review_status = site_review`)
+- [ ] Upload Site Inspection Report (PDF)
+  - [ ] Dropzone → `Report_Type = Site_Evaluation`
+  - [ ] Confirmed upload triggers Application Tracker (Site Review turns Green)
+
+**Draftsman**
+- [ ] View Applications (`review_status = draftsman_review`)
+  - [ ] Access attached Reports from previous stages
+- [ ] Tag Application
+  - [ ] “Endorsed for MPDC Review”
+  - [ ] “Not Endorsed for MPDC Review”
+- [ ] Upload Drafted Locational Clearance (PDF, if endorsed)
+  - [ ] Dropzone → `Report_Type = Locational_Clearance_Draft`
+- [ ] Upload Consolidated Evaluation Report (PDF, required in both cases)
+  - [ ] Dropzone → `Report_Type = Evaluation_Report`
+- [ ] Receive applications approved by Approving Authority but not endorsed
+  - [ ] Required to Upload Drafted Locational Clearance (PDF)
+
+**MPDO Final Approving Authority**
+- [ ] View Applications (`review_status = approving_authority_review`)
+  - [ ] Access attached Reports from previous stages
+  - [ ] Download attached reports
+  - [ ] Sort by Endorsed / Not Endorsed
+- **Not Endorsed Applications**
+  - If Approved:
+    - [ ] Upload signed Consolidated Evaluation Reports (PDF)
+      - Dropzone → `Report_Type = Signed_Evaluation_Report`
+    - [ ] Trigger re-review by Draftsman
+  - If Rejected:
+    - [ ] Tag as Rejected (`Application_Status = Rejected`)
+    - [ ] Add rejection comments
+- **Endorsed Applications**
+  - If Approved:
+    - [ ] Upload signed Consolidated Evaluation Reports (PDF, if not already uploaded)
+      - Dropzone → `Report_Type = Signed_Evaluation_Report`
+    - [ ] Upload signed Locational Clearance (PDF)
+      - Dropzone → `Report_Type = Signed_Locational_Clearance`
+    - [ ] Upload Zone Certification (PDF)
+      - Dropzone → `Report_Type = Zone_Certification`
+  - If Rejected:
+    - [ ] Tag as Rejected (`Application_Status = Rejected`)
+    - [ ] Add rejection comments
+
+### 📊 Application Tracker
+- [ ] Implement tracking system (makes use of the review_status attribute of the Application model)
+    - [ ] Initial Review 
+        - [ ] Yellow if review_status = initial_review
+        - [ ] Green if review_status ≠ initial_review
+    - [ ] GIS Review
+        - [ ] Grey if review_status = initial_review
+        - [ ] Yellow if review_status = gis_review
+        - [ ] Green if review_status ≠ initial_review, drone_review and gis_review
+    - [ ] Site Review
+        - [ ] Grey if review_status = initial_review, drone_review and gis_review
+        - [ ] Yellow if review_status = site_review
+        - [ ] Green if review_status ≠ initial_review, drone_review, gis_review and site_review
+    - [ ] Draftsman Review
+        - [ ] Grey if review_status = initial_review, drone_review, gis_review and site_review
+        - [ ] Yellow if review_status = draftsman_review
+        - [ ] Green if review_status ≠ initial_review, drone_review, gis_review, site_review and draftsman_review
+    - [ ] Approving Authority Review
+        - [ ] Grey if review_status = initial_review, drone_review, gis_review, site_review and draftsman_review
+        - [ ] Yellow if review_status = approving_authority_review
+        - [ ] Green if review_status = review_complete
+
+### 👥 Account Management
+- Admin
+  - [ ] Create Personnel Accounts
+  - [ ] Edit Personnel Accounts
+  - [ ] Be able to Set Admin Privileges
+  - [ ] Be able to Create Admin Accounts
+- Applicant
+  - [X] Account Creation
+  - [ ] Edit Account Details
+    - [ ] Update Serializer
+    - [ ] Update Views
+  - [ ] Deactivate Account
+
+### 🗄️ Database & Backend
+- [ ] Connect to Supabase
+    - [ ] Setup Supabase Tables
+    - [ ] Setup Supabase Triggers
+- [ ] Configure Django Admin Site (ITCC 16.1 Members)
+    - [ ] View all application, even the rejected ones.
+
+### 🎨 Frontend
+- [ ] Build React Frontend
 - [ ] Add Error Messages
 
-For Later in the Development:
-- [ ] Change storage for Access Tokens
+### 🔔 Notification System
+- [ ] Notify in website
+- [ ] Notify in email
+- [ ] Notify in sms
+- [ ] Notify when application is updated
+- [ ] Notify when final decision is made (Record Staff sends back an Accepted or Rejected Notification)
 
 ---
 
-## Deploymeny Method for Trial
+### 🚀 Future Enhancements
+- [ ] Conatact Us Page
+- [ ] Change Access Token Storage
+- [ ] Generate QR Code for Website Redirect
+- [ ] Frontend Componenent: List out Required Documents accessed through Home Dashboard
+  - [ ] Show samples of those required documents
+
+---
+
+## Deployment Method for Trial
 - http://console.choreo.dev/ ???
