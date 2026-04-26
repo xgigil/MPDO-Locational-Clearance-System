@@ -78,26 +78,27 @@ npm run dev
 ### 📝 Application Process
 
 #### Applicant Side
-- [ ] Upload Dropzone based on **Document_Type** (PDF)
+- [ ] Cancel application, only if it application_status is pending
+- [X]Upload Dropzone based on **Document_Type** (PDF)
   - **Zoning Certificate**
     - Required:
-      - [ ] Lot Title
-      - [ ] Survey Plan
-      - [ ] Tax Declaration
-      - [ ] Tax Clearance
-      - [ ] Barangay Construction Clearance
+      - [X] Lot Title
+      - [X] Survey Plan
+      - [X] Tax Declaration
+      - [X] Tax Clearance
+      - [X] Barangay Construction Clearance
     - Optional (triggered via checkbox):
-      - [ ] Deed of Sale
-      - [ ] Authorization Letter
-      - [ ] Letter of Exception
-  - [ ] Drawing Plan
-  - [ ] Application for Building Permit
-  - [ ] Cost Estimates
-  - [ ] Structural Analysis
-  - [ ] Locational Clearance Application Form
+      - [X] Deed of Sale
+      - [X] Authorization Letter
+      - [X] Letter of Exception
+  - [X] Drawing Plan
+  - [X] Application for Building Permit
+  - [X] Cost Estimates
+  - [X] Structural Analysis
+  - [X] Locational Clearance Application Form
 - [ ] Resubmit Application once receiving Notice to Comply
   - [ ] Show Upload Dropzone, based on the needed documents to comply
-- [ ] Allow Submission to be triggered only when all available Dropzones have uploaded PDF Files
+- [X] Allow Submission to be triggered only when all available Dropzones have uploaded PDF Files
 
 #### Personnel Side
 
@@ -225,7 +226,9 @@ npm run dev
 ### 🎨 Frontend
 - [ ] Build React Frontend
 - [ ] Add Error Messages
-
+- [ ] Add Auto-Fill(editable) in Applicant Information in Application Form
+- [ ] Save Application Form inputs when exited even though Form was yet to be submitted
+ 
 ### 🔔 Notification System
 - [ ] Notify in website
 - [ ] Notify in email

@@ -30,7 +30,7 @@ function App() {
         {/* About us page */}
         <Route path="/about" element={<AboutUs />} />
 
-        {/* Internal protected area */}
+        {/* Internal protected area: Application page */}
         <Route 
           path="/Application"
           element={
@@ -40,6 +40,7 @@ function App() {
           }
         />
 
+        {/* Internal protected area: Application tracker page */}
         <Route 
           path="/Application/Tracker"
           element={
