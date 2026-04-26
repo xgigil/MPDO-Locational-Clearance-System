@@ -1,5 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 from .models import Application, CustomUser, Applicant, Document, Project
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
@@ -97,13 +98,25 @@ class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
 class DocumentCopySerializer(serializers.ModelSerializer):
     # Exposes a friendly label for the uploaded document type in the copy view.
     document_label = serializers.SerializerMethodField()
+    # URL points to API endpoint that streams PDF bytes from the database.
+    download_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Document
-        fields = ["document_type", "document_label", "uploaded_document", "upload_timestamp"]
+        fields = [
+            "document_type",
+            "document_label",
+            "uploaded_document_name",
+            "upload_timestamp",
+            "download_url",
+        ]
 
     def get_document_label(self, obj):
         return dict(Document.DOCUMENT_TYPE_CHOICES).get(obj.document_type, obj.document_type)
+
+    def get_download_url(self, obj):
+        request = self.context.get("request")
+        return reverse("download_application_document", kwargs={"document_id": obj.document_id}, request=request)
 
 
 class ProjectCopySerializer(serializers.ModelSerializer):
@@ -322,7 +335,9 @@ class ApplicationSubmissionSerializer(serializers.Serializer):
             )
 
         for key, uploaded_file in files.items():
-            if uploaded_file.content_type != "application/pdf":
+            content_type = (uploaded_file.content_type or "").lower()
+            file_name = (uploaded_file.name or "").lower()
+            if content_type != "application/pdf" and not file_name.endswith(".pdf"):
                 raise serializers.ValidationError({"documents": f"{key} must be a PDF file."})
 
         with transaction.atomic():
@@ -359,10 +374,13 @@ class ApplicationSubmissionSerializer(serializers.Serializer):
             )
 
             for document_type in expected_documents:
+                uploaded_file = files[document_type]
                 Document.objects.create(
                     application=application,
                     document_type=document_type,
-                    uploaded_document=files[document_type],
+                    uploaded_document=uploaded_file.read(),
+                    uploaded_document_name=uploaded_file.name,
+                    uploaded_document_content_type=uploaded_file.content_type or "application/pdf",
                 )
 
         return application

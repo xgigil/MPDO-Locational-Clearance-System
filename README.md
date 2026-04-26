@@ -78,8 +78,7 @@ npm run dev
 ### 📝 Application Process
 
 #### Applicant Side
-- [ ] Cancel application, only if it application_status is pending
-- [X]Upload Dropzone based on **Document_Type** (PDF)
+- [ ] CancUpload Dropzone based on **Document_Type** (PDF)
   - **Zoning Certificate**
     - Required:
       - [X] Lot Title
@@ -220,6 +219,7 @@ npm run dev
 - [ ] Connect to Supabase
     - [ ] Setup Supabase Tables
     - [ ] Setup Supabase Triggers
+    - [ ] Fix the donwload document, wont download when its click on
 - [ ] Configure Django Admin Site (ITCC 16.1 Members)
     - [ ] View all application, even the rejected ones.
 

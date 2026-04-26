@@ -202,6 +202,29 @@ Implementation note:
 - `Application` page now owns the decision logic and fetches latest application state.
 - The copy view is now in a dedicated component for clean separation of concerns.
 
+### Database-backed PDF storage
+
+Files:
+
+- `backend/api/models.py`
+- `backend/api/migrations/0004_document_uploaded_document_content_type_and_more.py`
+- `backend/api/serializers.py`
+- `backend/api/views.py`
+- `backend/api/urls.py`
+- `frontend/src/components/ApplicationCopy.jsx`
+
+Changes:
+
+- Application documents are persisted as PDF bytes in the database (`Document.uploaded_document`).
+- Added metadata fields:
+  - `uploaded_document_name`
+  - `uploaded_document_content_type`
+- Added secure document download endpoint:
+  - `GET /api/applications/documents/<document_id>/download/`
+  - only the owner applicant can access the file
+- Application copy serializer now returns a `download_url` for each uploaded document.
+- Application copy frontend now opens document links from the database download endpoint.
+
 ## Validation and Tooling Notes
 
 - Frontend lint run succeeded for changed files.

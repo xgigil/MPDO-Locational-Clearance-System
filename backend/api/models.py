@@ -42,7 +42,7 @@ class Admin(models.Model):
 
 class Personnel(models.Model):
     personnel = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
-    personnel_role = models.CharField(max_length=50, unique=True)
+    personnel_role = models.CharField(max_length=50, choices=[("record_staff", "Record Staff"), ("gis_specialist", "GIS Specialist"), ("drone_specialist", "Drone Specialist"), ("site_inspector", "Site Inspector"), ("draftsman", "Draftsman"), ("approving_authority", "Approving Authority")])
 
 
 class Applicant(models.Model):
@@ -117,7 +117,10 @@ class Document(models.Model):
     document_id = models.AutoField(primary_key=True)
     application = models.ForeignKey(Application, on_delete=models.CASCADE)
     document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPE_CHOICES)
-    uploaded_document = models.FileField(upload_to="documents/")
+    # PDF bytes are stored directly in the database.
+    uploaded_document = models.BinaryField()
+    uploaded_document_name = models.CharField(max_length=255, null=True, blank=True)
+    uploaded_document_content_type = models.CharField(max_length=100, null=True, blank=True)
     upload_timestamp = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):

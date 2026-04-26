@@ -22,7 +22,7 @@ function ProtectedRoute({children}) {
 
         // Send a request to the backend to refresh the access token using the refresh token
         try {
-            const res = await api.post("/api/token/refresh/", { 
+            const res = await api.post("/api/user/applicant/refresh/", { 
                 refresh: refreshToken, 
             });
 

@@ -1,16 +1,65 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "../styles/Application.css";
+import { ACCESS_TOKEN } from "../constants";
+
 
 function ApplicationCopy({ application }) {
     const apiBaseUrl = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
-    // Makes uploaded file paths clickable even when backend returns relative /media/... URLs.
-    const resolveDocumentUrl = (uploadedDocumentUrl) => {
-        if (!uploadedDocumentUrl) return "#";
-        if (uploadedDocumentUrl.startsWith("http://") || uploadedDocumentUrl.startsWith("https://")) {
-            return uploadedDocumentUrl;
+    const [previewUrl, setPreviewUrl] = useState("");
+    const [previewName, setPreviewName] = useState("");
+
+    useEffect(() => {
+        return () => {
+            if (previewUrl) {
+                window.URL.revokeObjectURL(previewUrl);
+            }
+        };
+    }, [previewUrl]);
+    // Document URLs come from backend serializer and point to DB-streaming endpoint.
+    const resolveDocumentUrl = (downloadUrl) => {
+        if (!downloadUrl) return "#";
+        if (downloadUrl.startsWith("http://") || downloadUrl.startsWith("https://")) {
+            return downloadUrl;
         }
-        return `${apiBaseUrl}${uploadedDocumentUrl}`;
+        return `${apiBaseUrl}${downloadUrl}`;
     };
+
+    // View handler for protected files (preview inside the page).
+    function handleViewDocument(documentItem) {
+        const accessToken = localStorage.getItem(ACCESS_TOKEN);
+        fetch(resolveDocumentUrl(documentItem.download_url), {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to open document');
+            return response.blob();
+        })
+        .then(blob => {
+            if (previewUrl) {
+                window.URL.revokeObjectURL(previewUrl);
+            }
+            // Force PDF MIME type so it renders in iframe preview.
+            const pdfBlob = blob.type === "application/pdf"
+                ? blob
+                : new Blob([blob], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(pdfBlob);
+            setPreviewUrl(url);
+            setPreviewName(documentItem.document_label || "Document preview");
+        })
+        .catch(err => alert('Unable to view document: ' + err.message));
+    }
+
+    function closePreview() {
+        if (previewUrl) {
+            window.URL.revokeObjectURL(previewUrl);
+        }
+        setPreviewUrl("");
+        setPreviewName("");
+    }
 
     return (
         <div className="application-page">
@@ -61,13 +110,13 @@ function ApplicationCopy({ application }) {
                     <ul className="document-copy-list">
                         {(application.documents ?? []).map((documentItem) => (
                             <li key={`${documentItem.document_type}-${documentItem.upload_timestamp}`}>
-                                <a
-                                    href={resolveDocumentUrl(documentItem.uploaded_document)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                <button
+                                    type="button"
+                                    onClick={() => handleViewDocument(documentItem)}
+                                    className="download-link-btn"
                                 >
-                                    {documentItem.document_label}
-                                </a>
+                                    View {documentItem.document_label}
+                                </button>
                             </li>
                         ))}
                     </ul>
@@ -78,6 +127,29 @@ function ApplicationCopy({ application }) {
                         Home
                     </Link>
                 </div>
+
+                {previewUrl && (
+                    <div style={{ marginTop: "1rem" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem" }}>
+                            <p className="helper-text" style={{ margin: 0 }}>{previewName}</p>
+                            <button type="button" className="secondary-btn" onClick={closePreview}>
+                                Close Preview
+                            </button>
+                        </div>
+                        <iframe
+                            title="Uploaded document preview"
+                            src={previewUrl}
+                            style={{
+                                width: "100%",
+                                height: "70vh",
+                                marginTop: "0.75rem",
+                                border: "1px solid #ccc",
+                                borderRadius: "8px",
+                                background: "#fff",
+                            }}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );

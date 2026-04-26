@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import Group
 import json
+from django.http import HttpResponse, Http404
 from rest_framework import generics
 from .serializers import (
     ApplicationCopySerializer,
@@ -12,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Admin as CustomAdmin
-from .models import Application, CustomUser, Personnel
+from .models import Application, CustomUser, Document, Personnel
 import logging
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -103,7 +104,10 @@ class SubmitApplicationView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request_data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         application = serializer.save()
-        application_copy = ApplicationCopySerializer(application).data
+        application_copy = ApplicationCopySerializer(
+            application,
+            context={"request": request},
+        ).data
 
         return Response(
             {
@@ -133,7 +137,10 @@ class MyLatestApplicationView(generics.GenericAPIView):
         if not latest_application:
             return Response({"has_application": False}, status=status.HTTP_200_OK)
 
-        serialized_application = ApplicationCopySerializer(latest_application).data
+        serialized_application = ApplicationCopySerializer(
+            latest_application,
+            context={"request": request},
+        ).data
         return Response(
             {
                 "has_application": True,
@@ -142,3 +149,25 @@ class MyLatestApplicationView(generics.GenericAPIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class DownloadApplicationDocumentView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, document_id, *args, **kwargs):
+        # Allow any authenticated user to download any document.
+        document = Document.objects.filter(document_id=document_id).first()
+        if not document:
+            return Response({"detail": "Document not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if not document.uploaded_document:
+            return Response({"detail": "Document content is empty."}, status=status.HTTP_404_NOT_FOUND)
+
+        response = HttpResponse(
+            bytes(document.uploaded_document),
+            content_type=document.uploaded_document_content_type or "application/pdf",
+        )
+        response["Content-Disposition"] = (
+            f'inline; filename="{document.uploaded_document_name or "document.pdf"}"'
+        )
+        return response
