@@ -120,8 +120,9 @@ function InternalDashboard() {
                         </div>
                     </>
                 )}
-
-                {profile.is_admin && (
+                
+                {/* E remove ang admin sa internaldashboard since separate ang dashboard for admin */}
+                {profile.is_admin && ( 
                     <>
                         <h2>Admin Tools</h2>
                         <p className="helper-text">
