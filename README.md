@@ -98,6 +98,7 @@ npm run dev
 - [ ] Resubmit Application once receiving Notice to Comply
   - [ ] Show Upload Dropzone, based on the needed documents to comply
 - [X] Allow Submission to be triggered only when all available Dropzones have uploaded PDF Files
+- [ ] Receive Confirmation Messages via Notification
 
 #### Personnel Side
 
@@ -204,10 +205,14 @@ npm run dev
 
 ### 👥 Account Management
 - Admin
-  - [ ] Create Personnel Accounts
-  - [ ] Edit Personnel Accounts
-  - [ ] Be able to Set Admin Privileges
+  - [X] Create Personnel Accounts
+  - [X] Edit Personnel Accounts
+  - [X] Be able to Set Admin Privileges
+  - [ ] Delete Accounts
+  - [ ] View Applicant Accounts
   - [ ] Be able to Create Admin Accounts
+- Personnel
+  - [ ] Edit Profile?
 - Applicant
   - [X] Account Creation
   - [ ] Edit Account Details
@@ -222,6 +227,7 @@ npm run dev
     - [X] Fix the donwload document, wont download when its click on
 - [ ] Configure Django Admin Site (ITCC 16.1 Members)
     - [ ] View all application, even the rejected ones.
+    - [ ] Finish Account Management Functions for Admin
 
 ### 🎨 Frontend
 - [ ] Build React Frontend
@@ -235,6 +241,10 @@ npm run dev
 - [ ] Notify in sms
 - [ ] Notify when application is updated
 - [ ] Notify when final decision is made (Record Staff sends back an Accepted or Rejected Notification)
+
+---
+
+### Deployment Phase
 
 ---
 
