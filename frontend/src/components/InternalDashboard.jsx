@@ -26,12 +26,6 @@ function InternalDashboard() {
     });
     const [grantUserId, setGrantUserId] = useState("");
     const [feedback, setFeedback] = useState("");
-    // Build a stable backend admin URL from VITE_API_URL.
-    // This allows frontend users to open Django's prebuilt admin site.
-    const backendBaseUrl = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
-    const djangoAdminUrl = backendBaseUrl
-        ? `${backendBaseUrl.replace(/\/api$/, "")}/admin/`
-        : "/admin/";
 
     useEffect(() => {
         const loadProfile = async () => {

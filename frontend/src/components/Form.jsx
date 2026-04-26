@@ -5,7 +5,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN, USER_PROFILE } from "../constants";
 import "../styles/Form.css";
 import LoadingIndicator from "./LoadingIndicator";
 
-function Form({ route, method, portal = "applicant", requireInternal = false }) {
+function Form({ route, method, portal = "applicant", requireInternal = false, disallowInternal = false }) {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
@@ -47,6 +47,13 @@ function Form({ route, method, portal = "applicant", requireInternal = false }) 
                     localStorage.removeItem(REFRESH_TOKEN);
                     localStorage.removeItem(USER_PROFILE);
                     alert("This portal is for internal users only.");
+                    return;
+                }
+                if (disallowInternal && res.data.is_internal) {
+                    localStorage.removeItem(ACCESS_TOKEN);
+                    localStorage.removeItem(REFRESH_TOKEN);
+                    localStorage.removeItem(USER_PROFILE);
+                    alert("Invalid login credentials.");
                     return;
                 }
 
