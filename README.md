@@ -78,8 +78,7 @@ npm run dev
 ### 📝 Application Process
 
 #### Applicant Side
-- [X] Can Upload Dropzone based on **Document_Type** (PDF)
-  - **Zoning Certificate**
+- [X] Can Upload Dropzone based on **Document_Type**  - **Zoning Certificate**
     - Required:
       - [X] Lot Title
       - [X] Survey Plan
@@ -213,6 +212,7 @@ npm run dev
   - [ ] Be able to Create Admin Accounts
 - Personnel
   - [ ] Edit Profile?
+  - [ ] Link redirection to profile (if kaya)
 - Applicant
   - [X] Account Creation
   - [ ] Edit Account Details
@@ -235,6 +235,8 @@ npm run dev
 
 ### 🎨 Frontend
 - [ ] Build React Frontend
+- [ ] Add validation for registration form
+- [ ] Add validation for application form
 - [ ] Add Error Messages
 - [ ] Add Auto-Fill(editable) in Applicant Information in Application Form
 - [ ] Save Application Form inputs when exited even though Form was yet to be submitted
