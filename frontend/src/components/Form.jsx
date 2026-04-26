@@ -1,11 +1,11 @@
 import { useState } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+import { ACCESS_TOKEN, REFRESH_TOKEN, USER_PROFILE } from "../constants";
 import "../styles/Form.css";
 import LoadingIndicator from "./LoadingIndicator";
 
-function Form({ route, method }) {
+function Form({ route, method, portal = "applicant", requireInternal = false }) {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
@@ -26,6 +26,11 @@ function Form({ route, method }) {
     const [barangay, setBarangay] = useState("");
 
     const name = method === "login" ? "Login" : "Register";
+    const loginTitle = portal === "internal" ? "Internal User Login" : "Applicant Login";
+    const loginHelper =
+        portal === "internal"
+            ? "Authorized internal accounts only."
+            : "Sign in to submit and track your application.";
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,15 +38,35 @@ function Form({ route, method }) {
 
         try {
             if (method === "login") {
-                // backend expects "username" field, even if it's an email
+                // Login for both external and internal users.
                 const res = await api.post(route, { username: login, password });
+
+                // Keep internal and external portals separate by account type.
+                if (requireInternal && !res.data.is_internal) {
+                    localStorage.removeItem(ACCESS_TOKEN);
+                    localStorage.removeItem(REFRESH_TOKEN);
+                    localStorage.removeItem(USER_PROFILE);
+                    alert("This portal is for internal users only.");
+                    return;
+                }
+
                 localStorage.setItem(ACCESS_TOKEN, res.data.access);
                 localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-                navigate("/");
+                localStorage.setItem(USER_PROFILE, JSON.stringify({
+                    user_id: res.data.user_id,
+                    username: res.data.username,
+                    is_admin: res.data.is_admin,
+                    is_personnel: res.data.is_personnel,
+                    is_applicant: res.data.is_applicant,
+                    is_internal: res.data.is_internal,
+                    personnel_roles: res.data.personnel_roles ?? [],
+                }));
+                navigate(res.data.is_internal ? "/internal" : "/");
             } else {
                 // Register: email must be inside applicant
                 await api.post(route, {
                     username,
+                    email,
                     password,
                     first_name: firstName,
                     last_name: lastName,
@@ -50,7 +75,8 @@ function Form({ route, method }) {
                     contact_number: contactNumber,
                     birthdate,
                     applicant: {
-                        email,              // <-- moved here
+                        // Keep this for backwards compatibility; backend now defaults to user email.
+                        email,
                         house_street: houseStreet,
                         barangay,
                     },
@@ -67,7 +93,8 @@ function Form({ route, method }) {
 
     return (
         <form onSubmit={handleSubmit} className="form-container">
-            <h1>{name}</h1>
+            <h1>{method === "login" ? loginTitle : name}</h1>
+            {method === "login" && <p>{loginHelper}</p>}
 
             {method === "login" && (
                 <>
@@ -76,7 +103,7 @@ function Form({ route, method }) {
                         type="text"
                         value={login}
                         onChange={(e) => setLogin(e.target.value)}
-                        placeholder="Username or Email"
+                        placeholder="Username"
                         required
                     />
                     <input

@@ -141,6 +141,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = "/media/" # URL to access the media files
+MEDIA_ROOT = BASE_DIR / "media" # Path to the media files
 
 CORS_ALLOW_ALL_ORIGINS = True # Allow all origins for CORS requests during development. In production, you should specify the allowed origins for better security.
 # CORS_ALLOWED_ORIGINS = [ ]

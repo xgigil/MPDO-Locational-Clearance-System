@@ -1,8 +1,8 @@
-import Form from "../components/form";
+import Form from "../components/Form";
 
 function Login () {
     return (
-        <Form route="/api/user/applicant/login/" method="login" />
+        <Form route="/api/user/applicant/login/" method="login" portal="applicant" />
     )
 }
 

@@ -4,6 +4,12 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 # Custome Base Manager for CustomUser to handle user creation with email as the username field
 class CustomUserManager(BaseUserManager):
     def create_user(self, username=None, password=None, **extra_fields):
+        # Enforce email for every account type (applicant, personnel, admin).
+        email = extra_fields.get("email")
+        if not email:
+            raise ValueError("An email address is required.")
+        extra_fields["email"] = self.normalize_email(email)
+
         user = self.model(username=username, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -22,14 +28,14 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractUser):
     # Extra profile fields merged into CustomUser
-    email = models.CharField(max_length=255, unique=True, null=True, blank=True) # Optional email field for account validation, not used as username
+    email = models.EmailField(unique=True)
     middle_initial = models.CharField(max_length=1, null=True, blank=True)
     suffix = models.CharField(max_length=10, null=True, blank=True)
     contact_number = models.CharField(max_length=20)
     birthdate = models.DateField(null=True, blank=True)
     
     USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["email"]
 
     objects = CustomUserManager() # type: ignore # Tell Django to use our custom manager for user creation and superuser creation
 
@@ -41,8 +47,24 @@ class Admin(models.Model):
 
 
 class Personnel(models.Model):
+    ROLE_RECORD_STAFF = "record_staff"
+    ROLE_GIS_SPECIALIST = "gis_specialist"
+    ROLE_DRONE_SPECIALIST = "drone_specialist"
+    ROLE_SITE_INSPECTOR = "site_inspector"
+    ROLE_DRAFTSMAN = "draftsman"
+    ROLE_APPROVING_AUTHORITY = "approving_authority"
+    PERSONNEL_ROLE_CHOICES = [
+        (ROLE_RECORD_STAFF, "Record Staff"),
+        (ROLE_GIS_SPECIALIST, "GIS Specialist"),
+        (ROLE_DRONE_SPECIALIST, "Drone Specialist"),
+        (ROLE_SITE_INSPECTOR, "Site Inspector"),
+        (ROLE_DRAFTSMAN, "Draftsman"),
+        (ROLE_APPROVING_AUTHORITY, "Approving Authority"),
+    ]
+
     personnel = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
-    personnel_role = models.CharField(max_length=50, unique=True)
+    # A personnel user can hold multiple responsibilities at once.
+    personnel_roles = models.JSONField(default=list, blank=True)
 
 
 class Applicant(models.Model):
@@ -78,7 +100,9 @@ class Application(models.Model):
     application_status = models.CharField(max_length=50)
     review_status = models.CharField(max_length=50)
     application_comply = models.BooleanField(default=False)
+    application_completion = models.BooleanField(default=False)
     application_endorsement = models.BooleanField(default=False)
+    submitted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="submitted_applications")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     applicant_type = models.CharField(max_length=50, choices=[("Individual", "Individual"), ("Corporation", "Corporation")])
     corp_name = models.CharField(max_length=100, null=True, blank=True)
@@ -115,7 +139,10 @@ class Document(models.Model):
     document_id = models.AutoField(primary_key=True)
     application = models.ForeignKey(Application, on_delete=models.CASCADE)
     document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPE_CHOICES)
-    uploaded_document = models.FileField(upload_to="documents/")
+    # PDF bytes are stored directly in the database.
+    uploaded_document = models.BinaryField()
+    uploaded_document_name = models.CharField(max_length=255, null=True, blank=True)
+    uploaded_document_content_type = models.CharField(max_length=100, null=True, blank=True)
     upload_timestamp = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):

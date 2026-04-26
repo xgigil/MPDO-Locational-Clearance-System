@@ -1,0 +1,147 @@
+.application-page {
+  min-height: 100vh;
+  padding: 24px;
+  background: #081625;
+  color: #f1f5f9;
+}
+
+.application-card {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: 14px;
+  border: 1px solid #1e3a5f;
+  background: #0a1d31;
+}
+
+.application-copy {
+  margin-top: 20px;
+}
+
+.step-indicator {
+  margin: 6px 0 20px;
+  color: #93c5fd;
+}
+
+.section-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.field-label {
+  font-size: 0.92rem;
+  color: #dbeafe;
+}
+
+.section-grid input,
+.section-grid select,
+.section-grid p {
+  width: 100%;
+  border: 1px solid #2f4f72;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #071320;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.section-grid input:focus,
+.section-grid select:focus {
+  outline: 1px solid #60a5fa;
+}
+
+.dropzone-wrapper {
+  margin-top: 8px;
+}
+
+.dropzone {
+  position: relative;
+  border: 1px dashed #3b82f6;
+  border-radius: 10px;
+  padding: 18px;
+  background: #06101c;
+}
+
+.dropzone.dragging {
+  border-color: #fbbf24;
+  background: #0e2035;
+}
+
+.dropzone-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.dropzone-placeholder,
+.dropzone-file {
+  margin: 0;
+  color: #bfdbfe;
+}
+
+.optional-docs {
+  margin-top: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #2f4f72;
+  background: #071320;
+}
+
+.optional-docs h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.helper-text {
+  margin: 0;
+  color: #cbd5e1;
+}
+
+.status-message {
+  margin-top: 18px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #08213b;
+  border: 1px solid #1d4ed8;
+}
+
+.document-copy-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #dbeafe;
+}
+
+.button-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.primary-btn,
+.secondary-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.primary-btn {
+  background: #fbbf24;
+  color: #111827;
+}
+
+.secondary-btn {
+  background: #1e3a5f;
+  color: #e2e8f0;
+}

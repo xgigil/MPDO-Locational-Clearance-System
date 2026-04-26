@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
 from api.views import CreateUserView, CreateAdminView, CreatePersonnelView, UserTokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -32,5 +34,8 @@ urlpatterns = [
     
     path("api/", include("api.urls")), # Include the URLs from the api app
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
