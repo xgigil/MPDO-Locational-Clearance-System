@@ -3,10 +3,12 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Application from "./pages/Application";
 import ApplicationTracker from "./pages/ApplicationTracker";
 import Login from "./pages/Login";
+import InternalLogin from "./pages/InternalLogin";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
+import InternalHome from "./pages/InternalHome";
 import ProtectedRoute from "./components/ProtectedRoutes";
 
 function Logout() {
@@ -50,8 +52,19 @@ function App() {
           }
         />
 
+        {/* Internal protected dashboard for personnel/admin users */}
+        <Route
+          path="/internal"
+          element={
+            <ProtectedRoute requireInternal>
+              <InternalHome />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Auth routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/internal/login" element={<InternalLogin />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<Register />} />
 

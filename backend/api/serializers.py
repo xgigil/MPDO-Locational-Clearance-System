@@ -1,7 +1,8 @@
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework.reverse import reverse
-from .models import Application, CustomUser, Applicant, Document, Project
+from django.contrib.auth.models import Group
+from .models import Application, CustomUser, Applicant, Document, Project, Personnel, Admin
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
 
@@ -9,6 +10,9 @@ from django.contrib.auth import authenticate
 # Serializers accept JSON and convert it to a Python object, and vice versa to be used to communicate with other applications. They also validate the data.
 
 class ApplicantSerializer(serializers.ModelSerializer):
+    # Applicant email is synced from CustomUser email by default.
+    email = serializers.EmailField(required=False)
+
     class Meta:
         model = Applicant
         fields = [
@@ -26,6 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "username",
+            "email",
             "password",
             "first_name",
             "last_name",
@@ -44,6 +49,8 @@ class UserSerializer(serializers.ModelSerializer):
         user = CustomUser.objects.create_user(**validated_data)
 
         if applicant_data:
+            # Keep applicant email aligned with required CustomUser email.
+            applicant_data.setdefault("email", user.email)
             Applicant.objects.create(applicant=user, **applicant_data)
 
         return user
@@ -59,6 +66,8 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
 
         if applicant_data:
+            # Keep applicant email aligned with required CustomUser email.
+            applicant_data.setdefault("email", instance.email)
             Applicant.objects.update_or_create(applicant=instance, defaults=applicant_data)
 
         return instance
@@ -89,10 +98,112 @@ class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
         # ✅ Build token manually instead of calling super()
         refresh = self.get_token(user)
 
+        # Return role metadata so the frontend can route users to
+        # applicant or internal dashboards right after login.
+        is_admin = user.groups.filter(name="Admin").exists()
+        is_personnel = hasattr(user, "personnel")
+        is_applicant = hasattr(user, "applicant")
+        personnel_roles = []
+        if is_personnel:
+            personnel_roles = [
+                role for role in user.personnel.personnel_roles
+                if role in {choice[0] for choice in Personnel.PERSONNEL_ROLE_CHOICES}
+            ]
+
         return {
             "refresh": str(refresh),
             "access": str(refresh.access_token), # type: ignore
+            "user_id": user.id,
+            "username": user.username,
+            "is_admin": is_admin,
+            "is_personnel": is_personnel,
+            "is_applicant": is_applicant,
+            "is_internal": is_admin or is_personnel,
+            "personnel_roles": personnel_roles,
         }
+
+
+class InternalUserCreateSerializer(serializers.ModelSerializer):
+    personnel_roles = serializers.ListField(
+        child=serializers.ChoiceField(choices=[choice[0] for choice in Personnel.PERSONNEL_ROLE_CHOICES]),
+        required=False,
+        default=list,
+        allow_empty=True,
+    )
+    make_admin = serializers.BooleanField(required=False, default=False)
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            "id",
+            "username",
+            "email",
+            "password",
+            "first_name",
+            "last_name",
+            "middle_initial",
+            "suffix",
+            "contact_number",
+            "birthdate",
+            "personnel_roles",
+            "make_admin",
+        ]
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
+
+    def validate_personnel_roles(self, value):
+        # Keep role list deterministic and duplicate-free.
+        return list(dict.fromkeys(value))
+
+    def create(self, validated_data):
+        personnel_roles = validated_data.pop("personnel_roles", [])
+        make_admin = validated_data.pop("make_admin", False)
+        with transaction.atomic():
+            user = CustomUser.objects.create_user(**validated_data)
+            user.is_staff = True
+            user.save(update_fields=["is_staff"])
+
+            if personnel_roles:
+                Personnel.objects.create(personnel=user, personnel_roles=personnel_roles)
+                personnel_group, _ = Group.objects.get_or_create(name="Personnel")
+                user.groups.add(personnel_group)
+
+            if make_admin:
+                admin_group, _ = Group.objects.get_or_create(name="Admin")
+                user.groups.add(admin_group)
+                Admin.objects.get_or_create(admin=user)
+
+        return user
+
+
+class InternalUserSummarySerializer(serializers.ModelSerializer):
+    personnel_roles = serializers.SerializerMethodField()
+    is_admin = serializers.SerializerMethodField()
+    is_personnel = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "is_admin",
+            "is_personnel",
+            "personnel_roles",
+        ]
+
+    def get_is_admin(self, obj):
+        return obj.groups.filter(name="Admin").exists()
+
+    def get_is_personnel(self, obj):
+        return hasattr(obj, "personnel")
+
+    def get_personnel_roles(self, obj):
+        if not hasattr(obj, "personnel"):
+            return []
+        return obj.personnel.personnel_roles
 
 
 class DocumentCopySerializer(serializers.ModelSerializer):

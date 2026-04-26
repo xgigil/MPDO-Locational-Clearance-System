@@ -78,7 +78,7 @@ npm run dev
 ### 📝 Application Process
 
 #### Applicant Side
-- [ ] CancUpload Dropzone based on **Document_Type** (PDF)
+- [X] Can Upload Dropzone based on **Document_Type** (PDF)
   - **Zoning Certificate**
     - Required:
       - [X] Lot Title
@@ -219,7 +219,7 @@ npm run dev
 - [ ] Connect to Supabase
     - [ ] Setup Supabase Tables
     - [ ] Setup Supabase Triggers
-    - [ ] Fix the donwload document, wont download when its click on
+    - [X] Fix the donwload document, wont download when its click on
 - [ ] Configure Django Admin Site (ITCC 16.1 Members)
     - [ ] View all application, even the rejected ones.
 

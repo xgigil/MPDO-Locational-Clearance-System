@@ -13,4 +13,12 @@ urlpatterns = [
         views.DownloadApplicationDocumentView.as_view(),
         name="download_application_document",
     ),
+    # Internal account management and dashboard bootstrap endpoints.
+    path("internal/users/create/", views.InternalUserCreateView.as_view(), name="internal_user_create"),
+    path("internal/profile/", views.InternalProfileView.as_view(), name="internal_profile"),
+    path(
+        "internal/users/<int:user_id>/grant-admin/",
+        views.GrantAdminPrivilegeView.as_view(),
+        name="grant_admin_privilege",
+    ),
 ]

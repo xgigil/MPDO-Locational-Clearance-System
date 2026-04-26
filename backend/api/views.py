@@ -6,6 +6,8 @@ from rest_framework import generics
 from .serializers import (
     ApplicationCopySerializer,
     ApplicationSubmissionSerializer,
+    InternalUserCreateSerializer,
+    InternalUserSummarySerializer,
     UserSerializer,
     UserTokenObtainPairSerializer,
 )
@@ -60,14 +62,59 @@ class CreatePersonnelView(generics.CreateAPIView):
         personnel_group, created = Group.objects.get_or_create(name="Personnel") # Get or create the Personnel group
         user.groups.add(personnel_group) # Add the user to the Personnel group
         
-        Personnel.objects.create(
-            user=user,
-            personnel_role=self.request.data.get("personnel_role", "") # Get the personnel_role from the request data, default to an empty string if not provided # pyright: ignore[reportAttributeAccessIssue]
-        )
+        requested_roles = self.request.data.get("personnel_roles", []) # pyright: ignore[reportAttributeAccessIssue]
+        if isinstance(requested_roles, str):
+            requested_roles = [requested_roles]
+
+        # Use the model's own role list for consistency across admin + API.
+        valid_roles = {choice[0] for choice in Personnel.PERSONNEL_ROLE_CHOICES}
+        filtered_roles = [role for role in requested_roles if role in valid_roles]
+        Personnel.objects.create(personnel=user, personnel_roles=filtered_roles)
         
 
 class UserTokenObtainPairView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
+
+
+class InternalUserCreateView(generics.CreateAPIView):
+    """
+    Admin-only endpoint for creating internal users.
+    Users can be created as personnel, admin, or both.
+    """
+    queryset = CustomUser.objects.all()
+    serializer_class = InternalUserCreateSerializer
+    permission_classes = [isAdmin]
+
+
+class InternalProfileView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        serializer = InternalUserSummarySerializer(request.user)
+        data = serializer.data
+        data["is_internal"] = bool(data["is_admin"] or data["is_personnel"])
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class GrantAdminPrivilegeView(generics.GenericAPIView):
+    permission_classes = [isAdmin]
+
+    def post(self, request, user_id, *args, **kwargs):
+        user = CustomUser.objects.filter(id=user_id).first()
+        if not user:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Grant Django staff/admin group and keep custom Admin model in sync.
+        user.is_staff = True
+        user.save(update_fields=["is_staff"])
+        admin_group, _ = Group.objects.get_or_create(name="Admin")
+        user.groups.add(admin_group)
+        CustomAdmin.objects.get_or_create(admin=user)
+
+        return Response(
+            {"detail": "Admin privileges granted.", "user_id": user.id},
+            status=status.HTTP_200_OK,
+        )
 
 
 class SubmitApplicationView(generics.GenericAPIView):
