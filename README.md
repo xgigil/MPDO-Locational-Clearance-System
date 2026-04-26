@@ -47,7 +47,7 @@ python manage.py createsuperuser
 ```
 
 ### Python Frontend
-- Must have Node.js installed in Computer and can be accessed in PATH
+- Must have Node.js installed in Computer and can be accessed in PATH (Node.js version should be 20)
 ```bash
 # Initialize project (no need to do this)
 npm create vite@latest frontend --template react
