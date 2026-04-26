@@ -8,8 +8,13 @@ For Project version control purposes. Used in ITCC 40 (Web Design), ITCC 42 (SLP
 ### Python Backend
 - Must have Python installed in Computer and can be accessed in PATH
 ```bash
-# Create and activate virtual environment
+# Create virtual environment
 python -m venv env
+
+# If no admin privilage do this. If yes, skip.
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
+# Activate virtual environment
 env\Scripts\Activate.ps1
 
 # Navigate to backend folder
@@ -50,6 +55,9 @@ npm create vite@latest frontend --template react
 # Enter the Folder
 cd frontend
 
+# If no admin privilage do this. If yes, skip.
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
 # Install dependencies
 npm install
 npm install axios react-router-dom jwt-decode
@@ -63,9 +71,9 @@ npm run dev
 ## 📌 Project Roadmap
 
 ### 🔐 Role-Based Access Control (RBAC)
-- [ ] Applicant: Login/Logout & Registration
-    - [ ] Remove barangay and address
+- [X] Applicant: Login/Logout & Registration
 - [ ] Personnel: Login/Logout
+- [ ] Personnel: Create account via Admin
 
 ### 📝 Application Process
 

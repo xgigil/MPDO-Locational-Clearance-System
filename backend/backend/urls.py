@@ -16,8 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from api.views import CreateUserView, CreateAdminView, CreatePersonnelView
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from api.views import CreateUserView, CreateAdminView, CreatePersonnelView, UserTokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,8 +26,8 @@ urlpatterns = [
     path("admin/create-personnel/", CreatePersonnelView.as_view(), name="create_personnel"),
     path("admin/create-admin/", CreateAdminView.as_view(), name="create_admin"),
     
-    path("api/token/", TokenObtainPairView.as_view(), name="get_token"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
+    path("api/user/applicant/login/", UserTokenObtainPairView.as_view(), name="get_token"),
+    path("api/user/applicant/refresh/", TokenRefreshView.as_view(), name="refresh"),
     path("api-auth/", include("rest_framework.urls")),
     
     path("api/", include("api.urls")), # Include the URLs from the api app

@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.contrib.auth.models import Group
 from rest_framework import generics
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserTokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission
 from .models import Admin as CustomAdmin
 from .models import CustomUser, Personnel
 import logging
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 # Custom permissions
 class isAdmin(BasePermission):
@@ -54,3 +55,7 @@ class CreatePersonnelView(generics.CreateAPIView):
             user=user,
             personnel_role=self.request.data.get("personnel_role", "") # Get the personnel_role from the request data, default to an empty string if not provided # pyright: ignore[reportAttributeAccessIssue]
         )
+        
+
+class UserTokenObtainPairView(TokenObtainPairView):
+    serializer_class = UserTokenObtainPairSerializer
