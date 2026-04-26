@@ -220,6 +220,10 @@ npm run dev
     - [ ] Update Views
   - [ ] Deactivate Account
 
+### Email Verification
+- [ ] Require email verification to register (for applicant)
+- [ ] Require email verification for login (Admin and Personnel)?
+
 ### 🗄️ Database & Backend
 - [ ] Connect to Supabase
     - [ ] Setup Supabase Tables
@@ -241,6 +245,9 @@ npm run dev
 - [ ] Notify in sms
 - [ ] Notify when application is updated
 - [ ] Notify when final decision is made (Record Staff sends back an Accepted or Rejected Notification)
+
+### Possible MFA Options
+- [ ] Email verification before login
 
 ---
 
