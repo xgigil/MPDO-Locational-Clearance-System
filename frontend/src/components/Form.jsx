@@ -1,9 +1,8 @@
-// For Login and Register forms, which are used in the Login and Register pages respectively
 import { useState } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import "../styles/Form.css"
+import "../styles/Form.css";
 import LoadingIndicator from "./LoadingIndicator";
 
 function Form({ route, method }) {
@@ -11,10 +10,12 @@ function Form({ route, method }) {
     const [loading, setLoading] = useState(false);
 
     // Shared fields
-    const [email, setEmail] = useState("");
+    const [login, setLogin] = useState("");   // username OR email for login
     const [password, setPassword] = useState("");
 
     // Extra fields for register
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [middleInitial, setMiddleInitial] = useState("");
@@ -32,62 +33,89 @@ function Form({ route, method }) {
 
         try {
             if (method === "login") {
-            // Login only needs email + password
-            const res = await api.post(route, { email, password });
-            localStorage.setItem(ACCESS_TOKEN, res.data.access);
-            localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-            navigate("/");
+                // backend expects "username" field, even if it's an email
+                const res = await api.post(route, { username: login, password });
+                localStorage.setItem(ACCESS_TOKEN, res.data.access);
+                localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+                navigate("/");
             } else {
-            // Register needs full serializer fields
-            await api.post(route, {
-                email,
-                password,
-                first_name: firstName,
-                last_name: lastName,
-                middle_initial: middleInitial,
-                suffix,
-                contact_number: contactNumber,
-                birthdate,
-                applicant: {
-                house_street: houseStreet,
-                barangay,
-                },
-            });
-            navigate("/login");
+                // Register: email must be inside applicant
+                await api.post(route, {
+                    username,
+                    password,
+                    first_name: firstName,
+                    last_name: lastName,
+                    middle_initial: middleInitial,
+                    suffix,
+                    contact_number: contactNumber,
+                    birthdate,
+                    applicant: {
+                        email,              // <-- moved here
+                        house_street: houseStreet,
+                        barangay,
+                    },
+                });
+                navigate("/login");
             }
         } catch (error) {
-            console.log(error.response?.data); // shows DRF validation errors
-            alert("Registration failed. Check console for details.");
+            console.log(error.response?.data);
+            alert(`${name} failed. Check console for details.`);
         } finally {
             setLoading(false);
         }
     };
 
-
     return (
         <form onSubmit={handleSubmit} className="form-container">
             <h1>{name}</h1>
-            <input
-                className="form-input"
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                required
-            />
 
-            <input
-                className="form-input"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                required
-            />
+            {method === "login" && (
+                <>
+                    <input
+                        className="form-input"
+                        type="text"
+                        value={login}
+                        onChange={(e) => setLogin(e.target.value)}
+                        placeholder="Username or Email"
+                        required
+                    />
+                    <input
+                        className="form-input"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Password"
+                        required
+                    />
+                </>
+            )}
 
-            {/* Extra Fields only for register */}
             {method === "register" && (
                 <>
+                    <input
+                        className="form-input"
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Username"
+                        required
+                    />
+                    <input
+                        className="form-input"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Email"
+                        required
+                    />
+                    <input
+                        className="form-input"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Password"
+                        required
+                    />
                     <input
                         className="form-input"
                         type="text"
@@ -96,8 +124,7 @@ function Form({ route, method }) {
                         placeholder="First Name"
                         required
                     />
-
-                     <input
+                    <input
                         className="form-input"
                         type="text"
                         value={lastName}
@@ -105,7 +132,6 @@ function Form({ route, method }) {
                         placeholder="Last Name"
                         required
                     />
-
                     <input
                         className="form-input"
                         type="text"
@@ -113,7 +139,6 @@ function Form({ route, method }) {
                         onChange={(e) => setMiddleInitial(e.target.value)}
                         placeholder="Middle Initial"
                     />
-
                     <input
                         className="form-input"
                         type="text"
@@ -121,8 +146,7 @@ function Form({ route, method }) {
                         onChange={(e) => setSuffix(e.target.value)}
                         placeholder="Suffix"
                     />
-
-                     <input
+                    <input
                         className="form-input"
                         type="text"
                         value={contactNumber}
@@ -130,8 +154,7 @@ function Form({ route, method }) {
                         placeholder="Contact Number"
                         required
                     />
-
-                     <input
+                    <input
                         className="form-input"
                         type="date"
                         value={birthdate}
@@ -139,7 +162,6 @@ function Form({ route, method }) {
                         placeholder="Birthdate"
                         required
                     />
-
                     <input
                         className="form-input"
                         type="text"
@@ -148,8 +170,7 @@ function Form({ route, method }) {
                         placeholder="House Street"
                         required
                     />
-
-                     <input
+                    <input
                         className="form-input"
                         type="text"
                         value={barangay}
@@ -165,12 +186,11 @@ function Form({ route, method }) {
             <button className="form-button" type="submit">
                 {name}
             </button>
-
             <button className="form-button" type="button" onClick={() => navigate(-1)}>
                 Back
             </button>
         </form>
-    )
+    );
 }
 
-export default Form
+export default Form;
