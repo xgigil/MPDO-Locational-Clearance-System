@@ -30,7 +30,7 @@ function InternalDashboard() {
     useEffect(() => {
         const loadProfile = async () => {
             try {
-                const response = await api.get("/api/internal/profile/");
+                const response = await api.get("/api/user/internal/profile/");
                 setProfile(response.data);
                 // Keep local cache in sync so internal route guards can reuse profile.
                 localStorage.setItem(USER_PROFILE, JSON.stringify(response.data));
@@ -67,7 +67,7 @@ function InternalDashboard() {
     const createInternalUser = async (event) => {
         event.preventDefault();
         try {
-            await api.post("/api/internal/users/create/", newInternalUser);
+            await api.post("/api/user/internal/create/", newInternalUser);
             setFeedback("Internal user created successfully.");
             setNewInternalUser({
                 username: "",
@@ -88,7 +88,7 @@ function InternalDashboard() {
         event.preventDefault();
         if (!grantUserId) return;
         try {
-            await api.post(`/api/internal/users/${grantUserId}/grant-admin/`);
+            await api.post(`/api/user/internal/${grantUserId}/grant-admin/`);
             setFeedback(`Admin privilege granted to user ${grantUserId}.`);
             setGrantUserId("");
         } catch (error) {
