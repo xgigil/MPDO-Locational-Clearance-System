@@ -78,7 +78,7 @@ npm run dev
 ### 📝 Application Process
 
 #### Applicant Side
-- [X] Can Upload Dropzone based on **Document_Type** 
+- [X] Can Upload Dropzone based on **Document_Type**
   - **Zoning Certificate**
     - Required:
       - [X] Lot Title
