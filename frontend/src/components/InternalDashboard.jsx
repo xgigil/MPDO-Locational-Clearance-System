@@ -1,6 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import api from "../api";
 import { USER_PROFILE } from "../constants";
+import RecordStaffDashboard from "./internal-dashboard/RecordStaffDashboard";
+import GisSpecialistDashboard from "./internal-dashboard/GisSpecialistDashboard";
+import DroneSpecialistDashboard from "./internal-dashboard/DroneSpecialistDashboard";
+import SiteInspectorDashboard from "./internal-dashboard/SiteInspectorDashboard";
+import DraftsmanDashboard from "./internal-dashboard/DraftsmanDashboard";
+import ApprovingAuthorityDashboard from "./internal-dashboard/ApprovingAuthorityDashboard";
 
 const ROLE_LABELS = {
     record_staff: "Record Staff",
@@ -26,6 +33,7 @@ function InternalDashboard() {
     });
     const [grantUserId, setGrantUserId] = useState("");
     const [feedback, setFeedback] = useState("");
+    const djangoAdminUrl = `${(import.meta.env.VITE_API_URL ?? "").replace(/\/api\/?$/, "")}/admin/`;
 
     useEffect(() => {
         const loadProfile = async () => {
@@ -43,14 +51,16 @@ function InternalDashboard() {
         loadProfile();
     }, []);
 
-    const roleCards = useMemo(() => {
-        if (!profile?.personnel_roles?.length) return [];
-        return profile.personnel_roles.map((role) => ({
-            key: role,
-            title: ROLE_LABELS[role] ?? role,
-            description: `Role-specific queue and actions for ${ROLE_LABELS[role] ?? role}.`,
-        }));
-    }, [profile]);
+    const renderRoleDashboard = (role) => {
+        // Change: role content moved out of InternalDashboard to keep this parent component thin.
+        if (role === "record_staff") return <RecordStaffDashboard key={role} />;
+        if (role === "gis_specialist") return <GisSpecialistDashboard key={role} />;
+        if (role === "drone_specialist") return <DroneSpecialistDashboard key={role} />;
+        if (role === "site_inspector") return <SiteInspectorDashboard key={role} />;
+        if (role === "draftsman") return <DraftsmanDashboard key={role} />;
+        if (role === "approving_authority") return <ApprovingAuthorityDashboard key={role} />;
+        return null;
+    };
 
     const toggleRole = (roleKey) => {
         setNewInternalUser((prev) => {
@@ -106,22 +116,27 @@ function InternalDashboard() {
                 <p className="helper-text">
                     Signed in as {profile.username} ({profile.is_admin ? "Admin" : "Personnel"})
                 </p>
+                <div className="button-row" style={{ marginTop: "0.6rem", justifyContent: "flex-start" }}>
+                    <Link to="/logout" className="secondary-btn">Logout</Link>
+                </div>
 
                 {profile.is_personnel && (
                     <>
                         <h2>Personnel Role Views</h2>
-                        <div className="section-grid">
-                            {roleCards.map((card) => (
-                                <div key={card.key}>
-                                    <label className="field-label">{card.title}</label>
-                                    <p>{card.description}</p>
-                                </div>
-                            ))}
-                        </div>
+                        <p className="helper-text" style={{ marginBottom: "0.8rem" }}>
+                            Role-specific queues and actions are rendered in dedicated components below.
+                        </p>
+                        {(profile.personnel_roles ?? []).map((role) => (
+                            <div key={role} style={{ marginBottom: "1rem" }}>
+                                <label className="field-label" style={{ display: "block", marginBottom: "0.45rem" }}>
+                                    {ROLE_LABELS[role] ?? role}
+                                </label>
+                                {renderRoleDashboard(role)}
+                            </div>
+                        ))}
                     </>
                 )}
                 
-                {/* E remove ang admin sa internaldashboard since separate ang dashboard for admin */}
                 {profile.is_admin && ( 
                     <>
                         <h2>Admin Tools</h2>

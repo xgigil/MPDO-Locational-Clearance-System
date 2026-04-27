@@ -1,8 +1,9 @@
 from django.db import transaction
+import json
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 from django.contrib.auth.models import Group
-from .models import Application, CustomUser, Applicant, Document, Project, Personnel, Admin
+from .models import Application, CustomUser, Applicant, Document, Project, Personnel, Admin, Comment, Report
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
 
@@ -255,6 +256,8 @@ class ApplicationCopySerializer(serializers.ModelSerializer):
     submitted_by_id = serializers.SerializerMethodField()
     submitted_by_username = serializers.SerializerMethodField()
     submitted_by_full_name = serializers.SerializerMethodField()
+    compliance_required_document_types = serializers.SerializerMethodField()
+    compliance_message = serializers.SerializerMethodField()
 
     class Meta:
         model = Application
@@ -277,6 +280,8 @@ class ApplicationCopySerializer(serializers.ModelSerializer):
             "submitted_by_id",
             "submitted_by_username",
             "submitted_by_full_name",
+            "compliance_required_document_types",
+            "compliance_message",
             "project",
             "documents",
         ]
@@ -292,6 +297,90 @@ class ApplicationCopySerializer(serializers.ModelSerializer):
             return ""
         full_name = f"{obj.submitted_by.first_name} {obj.submitted_by.last_name}".strip()
         return full_name if full_name else obj.submitted_by.username
+
+    def _get_latest_compliance_payload(self, obj):
+        latest_compliance_comment = (
+            obj.comment_set.filter(comment_type="for_compliance")
+            .order_by("-comment_timestamp")
+            .first()
+        )
+        if not latest_compliance_comment:
+            return {}
+        try:
+            payload = json.loads(latest_compliance_comment.comment_box)
+            return payload if isinstance(payload, dict) else {}
+        except (json.JSONDecodeError, TypeError):
+            return {}
+
+    def get_compliance_required_document_types(self, obj):
+        payload = self._get_latest_compliance_payload(obj)
+        required_types = payload.get("required_document_types", [])
+        return required_types if isinstance(required_types, list) else []
+
+    def get_compliance_message(self, obj):
+        payload = self._get_latest_compliance_payload(obj)
+        message = payload.get("message", "")
+        return message if isinstance(message, str) else ""
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            "comment_id",
+            "comment_type",
+            "comment_box",
+            "comment_timestamp",
+        ]
+
+
+class InternalApplicationQueueSerializer(serializers.ModelSerializer):
+    project = ProjectCopySerializer(read_only=True)
+    submitted_by_username = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField()
+    documents = DocumentCopySerializer(source="document_set", many=True, read_only=True)
+    compliance_required_document_types = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Application
+        fields = [
+            "application_id",
+            "application_status",
+            "review_status",
+            "application_comply",
+            "application_completion",
+            "application_endorsement",
+            "submitted_by_username",
+            "project",
+            "comments",
+            "documents",
+            "compliance_required_document_types",
+            "application_date",
+        ]
+
+    def get_submitted_by_username(self, obj):
+        return obj.submitted_by.username if obj.submitted_by else ""
+
+    def get_comments(self, obj):
+        recent_comments = obj.comment_set.order_by("-comment_timestamp")[:5]
+        return CommentSerializer(recent_comments, many=True).data
+
+    def get_compliance_required_document_types(self, obj):
+        # Change: expose document requirements from the latest compliance comment.
+        latest_compliance_comment = (
+            obj.comment_set.filter(comment_type="for_compliance")
+            .order_by("-comment_timestamp")
+            .first()
+        )
+        if not latest_compliance_comment:
+            return []
+        try:
+            payload = json.loads(latest_compliance_comment.comment_box)
+            if isinstance(payload, dict) and isinstance(payload.get("required_document_types"), list):
+                return payload["required_document_types"]
+        except (json.JSONDecodeError, TypeError):
+            return []
+        return []
 
 
 # For Application Submission
