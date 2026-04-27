@@ -198,23 +198,3 @@ class MyLatestApplicationView(generics.GenericAPIView):
         )
 
 
-class DownloadApplicationDocumentView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, document_id, *args, **kwargs):
-        # Allow any authenticated user to download any document.
-        document = Document.objects.filter(document_id=document_id).first()
-        if not document:
-            return Response({"detail": "Document not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        if not document.uploaded_document:
-            return Response({"detail": "Document content is empty."}, status=status.HTTP_404_NOT_FOUND)
-
-        response = HttpResponse(
-            bytes(document.uploaded_document),
-            content_type=document.uploaded_document_content_type or "application/pdf",
-        )
-        response["Content-Disposition"] = (
-            f'inline; filename="{document.uploaded_document_name or "document.pdf"}"'
-        )
-        return response

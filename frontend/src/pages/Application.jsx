@@ -10,7 +10,7 @@ function Application() {
     useEffect(() => {
         const fetchLatestApplication = async () => {
             try {
-                const response = await api.get("/api/applications/my-latest/");
+                const response = await api.get("/api/user/applicant/applications/my-latest/");
                 if (response.data?.has_application) {
                     setLatestApplication(response.data.application ?? null);
                 } else {
