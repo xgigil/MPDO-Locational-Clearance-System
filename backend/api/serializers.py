@@ -467,7 +467,7 @@ class ApplicationSubmissionSerializer(serializers.Serializer):
             )
 
             application = Application.objects.create(
-                application_status="Pending",
+                application_status="pending",
                 review_status="initial_review",
                 application_completion=False,
                 submitted_by=request.user,

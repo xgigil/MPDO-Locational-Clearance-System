@@ -96,9 +96,28 @@ class Project(models.Model):
     existing_use = models.CharField(max_length=100)
 
 class Application(models.Model):
+    APPLICATION_STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("notice_to_comply", "Notice to Comply"),
+        ("upload_payment", "Upload Payment"),
+        ("under_review", "Under Review"),
+        ("accepted", "Accepted"),
+        ("rejected", "Rejected"),
+    ]
+    
+    REVIEW_STATUS_CHOICES = [
+        ("initial_review", "Initial Review"),
+        ("gis_review", "GIS Review"),
+        ("drone_review", "Drone Review"),
+        ("site_review", "Site Inspection"),
+        ("drafting_review", "Drafting Review"),
+        ("approving_authority_review", "Approving Authority Review"),
+        ("review_complete", "Review Complete"),
+    ]
+    
     application_id = models.AutoField(primary_key=True)
-    application_status = models.CharField(max_length=50)
-    review_status = models.CharField(max_length=50)
+    application_status = models.CharField(max_length=50, choices=APPLICATION_STATUS_CHOICES)
+    review_status = models.CharField(max_length=50, choices=REVIEW_STATUS_CHOICES)
     application_comply = models.BooleanField(default=False)
     application_completion = models.BooleanField(default=False)
     application_endorsement = models.BooleanField(default=False)
@@ -134,6 +153,7 @@ class Document(models.Model):
         ("struc_analysis", "Structural Analysis"),
         ("loc_clear_app_form", "Locational Clearance Application Form"),
         ("loc_clear_cert", "Locational Clearance Certificate"),
+        ("proof_payment", "Proof of Payment"),
     ]
     
     document_id = models.AutoField(primary_key=True)
@@ -150,13 +170,31 @@ class Document(models.Model):
 
 
 class Report(models.Model):
+    REVIEW_STATUS_CHOICES = [
+        ("gis_eval", "GIS Evaluation"),
+        ("drone_eval", "Drone Evaluation"),
+        ("site_eval", "Site Evaluation"),
+        ("loc_clear_draf", "Locational Clearance Draft"),
+        ("eval_rep", "Evaluation Report"),
+        ("signed_loc_clear", "Signed Locational Clearance"),
+        ("signed_eval_rep", "Signed Evaluation Report"),
+        ("zone_cert", "Zoning Certificate"),
+    ]
+        
     report_id = models.AutoField(primary_key=True)
-    report_type = models.CharField(max_length=50)
+    report_type = models.CharField(max_length=50, choices=REVIEW_STATUS_CHOICES)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     application = models.ForeignKey(Application, on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
+    COMMENT_TYPE_CHOICES = [
+        ("for_rejected", "Rejection Comment"),
+        ("for_approved", "Approval Comment"),
+        ("for_compliance", "Notice to Comply Comment"),
+        ("for_drone", "Drone Review Required Comment"),
+    ]
+    
     comment_id = models.AutoField(primary_key=True)
     comment_type = models.CharField(max_length=50)
     application = models.ForeignKey(Application, on_delete=models.CASCADE)
