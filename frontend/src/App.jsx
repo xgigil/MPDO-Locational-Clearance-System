@@ -2,6 +2,7 @@ import React from "react"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Application from "./pages/Application";
 import ApplicationTracker from "./pages/ApplicationTracker";
+import ApplicantComplianceResubmit from "./pages/ApplicantComplianceResubmit";
 import Login from "./pages/Login";
 import InternalLogin from "./pages/InternalLogin";
 import Register from "./pages/Register";
@@ -48,6 +49,15 @@ function App() {
           element={
             <ProtectedRoute>
               <ApplicationTracker />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/Application/Resubmit"
+          element={
+            <ProtectedRoute>
+              <ApplicantComplianceResubmit />
             </ProtectedRoute>
           }
         />

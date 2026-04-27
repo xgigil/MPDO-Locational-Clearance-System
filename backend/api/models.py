@@ -193,6 +193,7 @@ class Comment(models.Model):
         ("for_approved", "Approval Comment"),
         ("for_compliance", "Notice to Comply Comment"),
         ("for_drone", "Drone Review Required Comment"),
+        ("for_payment", "Request for Payment Comment"),
     ]
     
     comment_id = models.AutoField(primary_key=True)
