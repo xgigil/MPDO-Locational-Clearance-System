@@ -274,7 +274,7 @@ function ApplicationForm({ onSubmitted }) {
                 payload.append(doc.key, documents[doc.key]);
             });
 
-            const response = await api.post("/api/applications/submit/", payload, {
+            const response = await api.post("/api/user/applicant/applications/submit/", payload, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
