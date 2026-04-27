@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRoleQueue } from "./roleQueueApi";
+import ApplicationDocumentsPreview from "./ApplicationDocumentsPreview";
 
 function DraftsmanDashboard() {
     const { applications, loading, feedback, performAction, loadQueue } = useRoleQueue("draftsman");
@@ -17,6 +18,7 @@ function DraftsmanDashboard() {
                 <div key={application.application_id} className="application-card application-copy" style={{ marginTop: "0.75rem" }}>
                     <p>Application #{application.application_id} - {application.project?.project_title}</p>
                     <p>Status: {application.application_status} / {application.review_status}</p>
+                    <ApplicationDocumentsPreview documents={application.documents ?? []} />
                     {/* Change: draftsman can now set endorsement state before forwarding to approving authority. */}
                     <label style={{ display: "block", margin: "0.5rem 0" }}>
                         <input

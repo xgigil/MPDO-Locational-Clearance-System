@@ -272,7 +272,6 @@ npm run dev
 - [ ] Generate QR Code for Website Redirect
 - [ ] Frontend Componenent: List out Required Documents accessed through Home Dashboard
   - [ ] Show samples of those required documents
-- [ ] Be able to view documents uploaded before submission
 
 ---
 

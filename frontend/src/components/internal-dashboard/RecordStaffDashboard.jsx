@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useRoleQueue } from "./roleQueueApi";
+import ApplicationDocumentsPreview from "./ApplicationDocumentsPreview";
 
 const COMPLIANCE_DOCUMENT_OPTIONS = [
     { key: "lot_title", label: "Lot Title" },
@@ -74,6 +75,7 @@ function RecordStaffDashboard() {
             <p style={{ margin: 0 }}>Application #{application.application_id} - {application.submitted_by_username}</p>
             <p style={{ margin: "0.25rem 0" }}>Project: {application.project?.project_title || "N/A"}</p>
             <p style={{ margin: "0.25rem 0" }}>Status: {application.application_status} / {application.review_status}</p>
+            <ApplicationDocumentsPreview documents={application.documents ?? []} />
             {!!application.compliance_required_document_types?.length && (
                 <p className="helper-text" style={{ marginTop: "0.35rem" }}>
                     Required for compliance: {application.compliance_required_document_types.join(", ")}

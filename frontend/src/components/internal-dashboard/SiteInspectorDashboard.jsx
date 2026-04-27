@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRoleQueue } from "./roleQueueApi";
+import ApplicationDocumentsPreview from "./ApplicationDocumentsPreview";
 
 function SiteInspectorDashboard() {
     const { applications, loading, feedback, performAction, loadQueue } = useRoleQueue("site_inspector");
@@ -16,6 +17,7 @@ function SiteInspectorDashboard() {
                 <div key={application.application_id} className="application-card application-copy" style={{ marginTop: "0.75rem" }}>
                     <p>Application #{application.application_id} - {application.project?.project_title}</p>
                     <p>Status: {application.application_status} / {application.review_status}</p>
+                    <ApplicationDocumentsPreview documents={application.documents ?? []} />
                     {/* Change: site inspection upload action now routes the app to draftsman review. */}
                     <input type="file" accept="application/pdf" onChange={(event) => setFileById((prev) => ({ ...prev, [application.application_id]: event.target.files?.[0] ?? null }))} />
                     <div className="button-row">
