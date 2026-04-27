@@ -108,8 +108,10 @@ npm run dev
   - Notice to Comply → Missing or incorrect documents
     - [ ] Indicate which document needs to be uploaded before submitting notice
     - [ ] Add comments
+  - Upload Payment → Application marked complete. Need only to upload proof of payment
+    - [ ] Dropzone for Uploading Payment. To be attached to the Application
   - Under Review → Ongoing process
-    - [ ] Button to mark as ready for next stage
+    - [ ] Button to mark as ready for next stage. Only available if document_type = proof_payment is successfully attached to the application.
   - Accepted → Approved by MPDO Approving Authority
     - [ ] Receive approved application
         - [ ] Attached are all the Reports uploaded during the process (except for the ones uploaded by the Draftsman)
