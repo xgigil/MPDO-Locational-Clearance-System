@@ -7,6 +7,12 @@ urlpatterns = [
     path("user/applicant/applications/submit/", views.SubmitApplicationView.as_view(), name="submit_application",),
     # Used by frontend to fetch the latest copy and know if application submission must be disabled.
     path("user/applicant/applications/my-latest/", views.MyLatestApplicationView.as_view(), name="my_latest_application",),
+    # Used by frontend to track a specific application by ID.
+    path(
+        "user/applicant/applications/track/<int:application_id>/",
+        views.TrackApplicationView.as_view(),
+        name="track_application",
+    ),
     # Used to view profile of a an applicant user, including their submitted applications.
     
     # path("user/applicant/<int:user_id>/", views.ApplicantProfileView.as_view(), name="applicant_profile",),

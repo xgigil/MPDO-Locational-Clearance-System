@@ -198,3 +198,36 @@ class MyLatestApplicationView(generics.GenericAPIView):
         )
 
 
+class TrackApplicationView(generics.GenericAPIView):
+    """
+    Applicant-only tracking endpoint.
+    Ensures users can only track their own submitted applications.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, application_id, *args, **kwargs):
+        app = (
+            Application.objects.filter(application_id=application_id, submitted_by=request.user)
+            .select_related("project")
+            .prefetch_related("document_set")
+            .first()
+        )
+        if not app:
+            return Response(
+                {"found": False, "detail": "Application not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        serialized = ApplicationCopySerializer(app, context={"request": request}).data
+        return Response(
+            {
+                "found": True,
+                "application_id": app.application_id,
+                "application_status": app.application_status,
+                "review_status": app.review_status,
+                "application": serialized,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+

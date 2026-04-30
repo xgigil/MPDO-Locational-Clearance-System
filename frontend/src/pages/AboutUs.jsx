@@ -1,59 +1,40 @@
-import { Link, useNavigate } from "react-router-dom";
-import { ACCESS_TOKEN } from "../constants";
-import { useState, useEffect } from "react";
-import "../styles/Home.css";
+import { Link } from "react-router-dom";
 
 function AboutUs() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        // Check if user is logged in
-        const token = localStorage.getItem(ACCESS_TOKEN);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setIsLoggedIn(!!token);
-    }, []);
-
-    const handleLogout = () => {
-        localStorage.clear();
-        setIsLoggedIn(false);
-        navigate("/");
-    };
-
-    return (
-        <div className="home-container">
-            <h1>About Us</h1>
-            <p>MPDO shdaojfhjksahfuohe</p>
-            
-            <div className="button-group">
-                <Link to="/" className="nav-button home-btn">
-                    Home
-                </Link>
-                {!isLoggedIn ? (
-                    <>
-                        <Link to="/login" className="nav-button login-btn">
-                            Login
-                        </Link>
-                        <Link to="/register" className="nav-button register-btn">
-                            Register
-                        </Link>
-                        <Link to="/Application" className="nav-button application-btn">
-                            Application
-                        </Link>
-                    </>
-                ) : (
-                    <>
-                        <Link to="/Application" className="nav-button application-btn">
-                            Application
-                        </Link>
-                        <button onClick={handleLogout} className="nav-button logout-btn">
-                            Logout
-                        </button>
-                    </>
-                )}
-            </div>
+  return (
+    <main>
+      <div className="container auth-wrap contact-wrap">
+        <div className="contact-header">
+          <h1 className="contact-title">Contact Us</h1>
+          <p className="contact-subtitle">We&apos;re here to help</p>
         </div>
-    );
+
+        <div className="contact-cards">
+          <div className="contact-card">
+            <div className="contact-icon contact-icon-phone" aria-hidden="true">
+              ☎
+            </div>
+            <h2 className="contact-card-title">Call Us</h2>
+            <p className="contact-card-text">For immediate assistance, please call us.</p>
+            <p className="contact-card-text">+63-955-462-1802</p>
+            <div className="contact-card-bottom" aria-hidden="true"></div>
+          </div>
+
+          <div className="contact-card">
+            <div className="contact-icon contact-icon-mail" aria-hidden="true">
+              ✉
+            </div>
+            <h2 className="contact-card-title">Ask a Question</h2>
+            <p className="contact-card-text">Have a question? Send us an email!</p>
+            <Link className="btn btn-ask-start" to="/ask">
+              Get Started
+            </Link>
+            <div className="contact-card-bottom" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
 }
 
 export default AboutUs;

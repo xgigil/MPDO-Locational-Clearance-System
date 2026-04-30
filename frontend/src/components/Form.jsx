@@ -1,8 +1,7 @@
 import { useState } from "react";
 import api from "../api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN, USER_PROFILE } from "../constants";
-import "../styles/Form.css";
 import LoadingIndicator from "./LoadingIndicator";
 
 function Form({ route, method, portal = "applicant", requireInternal = false, disallowInternal = false }) {
@@ -99,131 +98,222 @@ function Form({ route, method, portal = "applicant", requireInternal = false, di
     };
 
     return (
-        <form onSubmit={handleSubmit} className="form-container">
-            <h1>{method === "login" ? loginTitle : name}</h1>
-            {method === "login" && <p>{loginHelper}</p>}
+        <main>
+            <div className="container auth-wrap">
+                <div className="auth-card">
+                    <h1 className="auth-title">{method === "login" ? loginTitle : "Create an Account"}</h1>
+                    {method === "login" ? (
+                        <p className="auth-subtitle">{loginHelper}</p>
+                    ) : (
+                        <p className="auth-subtitle">Create an account to access applications and tracking.</p>
+                    )}
 
-            {method === "login" && (
-                <>
-                    <input
-                        className="form-input"
-                        type="text"
-                        value={login}
-                        onChange={(e) => setLogin(e.target.value)}
-                        placeholder="Username"
-                        required
-                    />
-                    <input
-                        className="form-input"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Password"
-                        required
-                    />
-                </>
-            )}
+                    <form onSubmit={handleSubmit}>
+                        {method === "login" && (
+                            <>
+                                <label className="auth-label">
+                                    <span>Username or Email</span>
+                                    <input
+                                        type="text"
+                                        value={login}
+                                        onChange={(e) => setLogin(e.target.value)}
+                                        placeholder="Username or Email"
+                                        autoComplete="username"
+                                        required
+                                    />
+                                </label>
+                                <label className="auth-label">
+                                    <span>Password</span>
+                                    <input
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="••••••••"
+                                        autoComplete="current-password"
+                                        required
+                                    />
+                                </label>
 
-            {method === "register" && (
-                <>
-                    <input
-                        className="form-input"
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        placeholder="Username"
-                        required
-                    />
-                    <input
-                        className="form-input"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email"
-                        required
-                    />
-                    <input
-                        className="form-input"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Password"
-                        required
-                    />
-                    <input
-                        className="form-input"
-                        type="text"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        placeholder="First Name"
-                        required
-                    />
-                    <input
-                        className="form-input"
-                        type="text"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        placeholder="Last Name"
-                        required
-                    />
-                    <input
-                        className="form-input"
-                        type="text"
-                        value={middleInitial}
-                        onChange={(e) => setMiddleInitial(e.target.value)}
-                        placeholder="Middle Initial"
-                    />
-                    <input
-                        className="form-input"
-                        type="text"
-                        value={suffix}
-                        onChange={(e) => setSuffix(e.target.value)}
-                        placeholder="Suffix"
-                    />
-                    <input
-                        className="form-input"
-                        type="text"
-                        value={contactNumber}
-                        onChange={(e) => setContactNumber(e.target.value)}
-                        placeholder="Contact Number"
-                        required
-                    />
-                    <input
-                        className="form-input"
-                        type="date"
-                        value={birthdate}
-                        onChange={(e) => setBirthdate(e.target.value)}
-                        placeholder="Birthdate"
-                        required
-                    />
-                    <input
-                        className="form-input"
-                        type="text"
-                        value={houseStreet}
-                        onChange={(e) => setHouseStreet(e.target.value)}
-                        placeholder="House Street"
-                        required
-                    />
-                    <input
-                        className="form-input"
-                        type="text"
-                        value={barangay}
-                        onChange={(e) => setBarangay(e.target.value)}
-                        placeholder="Barangay"
-                        required
-                    />
-                </>
-            )}
+                                <div className="auth-row">
+                                    <label className="auth-check">
+                                        <input type="checkbox" name="remember" />
+                                        <span>Remember me</span>
+                                    </label>
+                                    <Link className="auth-link" to="/forgot">
+                                        Forgot Password
+                                    </Link>
+                                </div>
 
-            {loading && <LoadingIndicator />}
+                                <button className="btn-login" type="submit" disabled={loading}>
+                                    {loading ? "Signing in..." : "Login"}
+                                </button>
 
-            <button className="form-button" type="submit">
-                {name}
-            </button>
-            <button className="form-button" type="button" onClick={() => navigate(-1)}>
-                Back
-            </button>
-        </form>
+                                {portal !== "internal" && (
+                                    <div className="auth-divider">
+                                        <span className="auth-divider-line" aria-hidden="true"></span>
+                                        <button
+                                            className="auth-divider-text auth-divider-link"
+                                            type="button"
+                                            onClick={() => navigate("/register")}
+                                        >
+                                            Don&apos;t have an account?
+                                        </button>
+                                        <span className="auth-divider-line" aria-hidden="true"></span>
+                                    </div>
+                                )}
+
+                                {portal !== "internal" && (
+                                    <div className="auth-subtitle" style={{ marginTop: 14, marginBottom: 0 }}>
+                                        Internal personnel/admin accounts should log in via{" "}
+                                        <Link className="auth-link" to="/internal/login">
+                                            Internal Login
+                                        </Link>
+                                        .
+                                    </div>
+                                )}
+                            </>
+                        )}
+
+                        {method === "register" && (
+                            <>
+                                <label className="auth-label">
+                                    <span>Username</span>
+                                    <input
+                                        type="text"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        placeholder="Username"
+                                        autoComplete="username"
+                                        required
+                                    />
+                                </label>
+                                <label className="auth-label">
+                                    <span>Email Address</span>
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="name@email.com"
+                                        autoComplete="email"
+                                        required
+                                    />
+                                </label>
+                                <label className="auth-label">
+                                    <span>Password</span>
+                                    <input
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="••••••••"
+                                        autoComplete="new-password"
+                                        required
+                                    />
+                                </label>
+
+                                <div className="auth-row" style={{ justifyContent: "stretch" }}>
+                                    <label className="auth-label" style={{ flex: 1, marginTop: 0 }}>
+                                        <span>First Name</span>
+                                        <input
+                                            type="text"
+                                            value={firstName}
+                                            onChange={(e) => setFirstName(e.target.value)}
+                                            placeholder="First Name"
+                                            required
+                                        />
+                                    </label>
+                                    <label className="auth-label" style={{ flex: 1, marginTop: 0 }}>
+                                        <span>Last Name</span>
+                                        <input
+                                            type="text"
+                                            value={lastName}
+                                            onChange={(e) => setLastName(e.target.value)}
+                                            placeholder="Last Name"
+                                            required
+                                        />
+                                    </label>
+                                </div>
+
+                                <div className="auth-row" style={{ justifyContent: "stretch" }}>
+                                    <label className="auth-label" style={{ flex: 1, marginTop: 0 }}>
+                                        <span>Middle Initial</span>
+                                        <input
+                                            type="text"
+                                            value={middleInitial}
+                                            onChange={(e) => setMiddleInitial(e.target.value)}
+                                            placeholder="M"
+                                            maxLength={1}
+                                        />
+                                    </label>
+                                    <label className="auth-label" style={{ flex: 1, marginTop: 0 }}>
+                                        <span>Suffix</span>
+                                        <input
+                                            type="text"
+                                            value={suffix}
+                                            onChange={(e) => setSuffix(e.target.value)}
+                                            placeholder="Suffix"
+                                        />
+                                    </label>
+                                </div>
+
+                                <label className="auth-label">
+                                    <span>Contact Number</span>
+                                    <input
+                                        type="text"
+                                        value={contactNumber}
+                                        onChange={(e) => setContactNumber(e.target.value)}
+                                        placeholder="Contact Number"
+                                        required
+                                    />
+                                </label>
+                                <label className="auth-label">
+                                    <span>Birthdate</span>
+                                    <input
+                                        type="date"
+                                        value={birthdate}
+                                        onChange={(e) => setBirthdate(e.target.value)}
+                                        required
+                                    />
+                                </label>
+                                <label className="auth-label">
+                                    <span>House / Street</span>
+                                    <input
+                                        type="text"
+                                        value={houseStreet}
+                                        onChange={(e) => setHouseStreet(e.target.value)}
+                                        placeholder="House Street"
+                                        required
+                                    />
+                                </label>
+                                <label className="auth-label">
+                                    <span>Barangay</span>
+                                    <input
+                                        type="text"
+                                        value={barangay}
+                                        onChange={(e) => setBarangay(e.target.value)}
+                                        placeholder="Barangay"
+                                        required
+                                    />
+                                </label>
+                            </>
+                        )}
+
+                        {loading && <LoadingIndicator />}
+
+                        {method === "register" && (
+                            <button className="btn-login" type="submit" disabled={loading}>
+                                {loading ? "Creating..." : "Register"}
+                            </button>
+                        )}
+
+                        <div className="forgot-actions">
+                            <button className="btn-forgot-cancel" type="button" onClick={() => navigate(-1)}>
+                                Back
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
     );
 }
 
