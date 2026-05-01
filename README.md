@@ -72,8 +72,8 @@ npm run dev
 
 ### 🔐 Role-Based Access Control (RBAC)
 - [X] Applicant: Login/Logout & Registration
-- [ ] Personnel: Login/Logout
-- [ ] Personnel: Create account via Admin
+- [X] Personnel: Login/Logout
+- [X] Personnel: Create account via Admin
 
 ### 📝 Application Process
 
@@ -95,27 +95,30 @@ npm run dev
   - [X] Cost Estimates
   - [X] Structural Analysis
   - [X] Locational Clearance Application Form
-- [ ] Resubmit Application once receiving Notice to Comply
-  - [ ] Show Upload Dropzone, based on the needed documents to comply
+- [X] Resubmit Application once receiving Notice to Comply
+  - [X] Show Upload Dropzone, based on the needed documents to comply
 - [X] Allow Submission to be triggered only when all available Dropzones have uploaded PDF Files
 - [ ] Receive Confirmation Messages via Notification
+- [ ] View comment on proceed with in-person payment
+- [ ] Should only view the documents they uploaded. Should not see documents uploaded by Personnel
 
 #### Personnel Side
 
 **Records Staff**
-- [ ] View Applications (segregated by `Application_Status`)
+- [X] View Applications (segregated by `Application_Status`)
   - Pending → Just submitted, documents not yet checked
   - Notice to Comply → Missing or incorrect documents
-    - [ ] Indicate which document needs to be uploaded before submitting notice
-    - [ ] Add comments
+    - [X] Indicate which document needs to be uploaded before submitting notice
+    - [X] Add comments
+      - [ ] require comments to be filled before submitting
   - Upload Payment → Application marked complete. Need only to upload proof of payment
-    - [ ] Dropzone for Uploading Payment. To be attached to the Application
+    - [X] Dropzone for Uploading Payment. To be attached to the Application
   - Under Review → Ongoing process
-    - [ ] Button to mark as ready for next stage. Only available if document_type = proof_payment is successfully attached to the application.
+    - [X] Button to mark as ready for next stage. Only available if document_type = proof_payment is successfully attached to the application.
   - Accepted → Approved by MPDO Approving Authority
     - [ ] Receive approved application
         - [ ] Attached are all the Reports uploaded during the process (except for the ones uploaded by the Draftsman)
-        - [ ] Download attached reports
+        - [X] Download attached reports
     - [ ] Notify applicant of acceptance
       - [ ] Attach digital Locational Clearance Certificate
       - [ ] Inform applicant to claim physical copy at MPDO
@@ -125,24 +128,26 @@ npm run dev
     - [ ] Notify applicant with rejection comments
 
 **GIS Specialist**
-- [ ] View Applications (`review_status = gis_review`)
-- [ ] Upload GIS Evaluation Certification (PDF)
-  - [ ] Dropzone → `Report_Type = GIS_Evaluation`
-  - [ ] Checklist: Drone Inspection required? (Yes/No)
+- [X] View Applications (`review_status = gis_review`)
+- [X] Upload GIS Evaluation Certification (PDF)
+  - [X] Dropzone → `Report_Type = GIS_Evaluation`
+  - [X] Checklist: Drone Inspection required? (Yes/No)
     - If Yes → `review_status = drone_review`
-      - [ ] Add comment for why
+      - [X] Add comment for why
+        - [ ] Required to be filled
     - If No → Confirmed upload triggers Application Tracker (GIS Review turns Green)
+- [X] Button to confirm and change review_status. Removes from view.
 
 **Drone Inspection**
-- [ ] View Applications (`review_status = drone_review`)
-- [ ] Upload Drone Inspection Results (PDF)
-  - [ ] Dropzone → `Report_Type = Drone_Evaluation`
+- [X] View Applications (`review_status = drone_review`)
+- [X] Upload Drone Inspection Results (PDF)
+  - [X] Dropzone → `Report_Type = Drone_Evaluation`
   - [ ] Confirmed upload triggers Application Tracker (GIS Review turns Green)
 
 **Site Inspection**
-- [ ] View Applications (`review_status = site_review`)
-- [ ] Upload Site Inspection Report (PDF)
-  - [ ] Dropzone → `Report_Type = Site_Evaluation`
+- [X] View Applications (`review_status = site_review`)
+- [X] Upload Site Inspection Report (PDF)
+  - [X] Dropzone → `Report_Type = Site_Evaluation`
   - [ ] Confirmed upload triggers Application Tracker (Site Review turns Green)
 
 **Draftsman**
@@ -184,7 +189,7 @@ npm run dev
     - [ ] Add rejection comments
 
 ### 📊 Application Tracker
-- [ ] Implement tracking system (makes use of the review_status attribute of the Application model)
+- [X] Implement tracking system (makes use of the review_status attribute of the Application model)
     - [ ] Initial Review 
         - [ ] Yellow if review_status = initial_review
         - [ ] Green if review_status ≠ initial_review
@@ -204,6 +209,7 @@ npm run dev
         - [ ] Grey if review_status = initial_review, drone_review, gis_review, site_review and draftsman_review
         - [ ] Yellow if review_status = approving_authority_review
         - [ ] Green if review_status = review_complete
+- [ ] Make it navigatable to and from applicant home page
 
 ### 👥 Account Management
 - Admin

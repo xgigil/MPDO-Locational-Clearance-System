@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import "../styles/Application.css";
 import { ACCESS_TOKEN } from "../constants";
 
-
 function ApplicationCopy({ application }) {
     const apiBaseUrl = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
     const [previewUrl, setPreviewUrl] = useState("");
@@ -16,7 +15,7 @@ function ApplicationCopy({ application }) {
             }
         };
     }, [previewUrl]);
-    // Document URLs come from backend serializer and point to DB-streaming endpoint.
+
     const resolveDocumentUrl = (downloadUrl) => {
         if (!downloadUrl) return "#";
         if (downloadUrl.startsWith("http://") || downloadUrl.startsWith("https://")) {
@@ -25,32 +24,30 @@ function ApplicationCopy({ application }) {
         return `${apiBaseUrl}${downloadUrl}`;
     };
 
-    // View handler for protected files (preview inside the page).
     function handleViewDocument(documentItem) {
         const accessToken = localStorage.getItem(ACCESS_TOKEN);
         fetch(resolveDocumentUrl(documentItem.download_url), {
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Authorization': 'Bearer ' + accessToken,
-            }
+                Authorization: `Bearer ${accessToken}`,
+            },
         })
-        .then(response => {
-            if (!response.ok) throw new Error('Failed to open document');
-            return response.blob();
-        })
-        .then(blob => {
-            if (previewUrl) {
-                window.URL.revokeObjectURL(previewUrl);
-            }
-            // Force PDF MIME type so it renders in iframe preview.
-            const pdfBlob = blob.type === "application/pdf"
-                ? blob
-                : new Blob([blob], { type: "application/pdf" });
-            const url = window.URL.createObjectURL(pdfBlob);
-            setPreviewUrl(url);
-            setPreviewName(documentItem.document_label || "Document preview");
-        })
-        .catch(err => alert('Unable to view document: ' + err.message));
+            .then((response) => {
+                if (!response.ok) throw new Error("Failed to open document");
+                return response.blob();
+            })
+            .then((blob) => {
+                if (previewUrl) {
+                    window.URL.revokeObjectURL(previewUrl);
+                }
+                const pdfBlob = blob.type === "application/pdf"
+                    ? blob
+                    : new Blob([blob], { type: "application/pdf" });
+                const url = window.URL.createObjectURL(pdfBlob);
+                setPreviewUrl(url);
+                setPreviewName(documentItem.document_label || "Document preview");
+            })
+            .catch((err) => alert(`Unable to view document: ${err.message}`));
     }
 
     function closePreview() {
@@ -73,6 +70,12 @@ function ApplicationCopy({ application }) {
                     Your current application is still active (`application_completion = false`).
                     New application submissions are disabled until this one is completed.
                 </p>
+                {application.application_status === "notice_to_comply" && (
+                    <p className="status-message">
+                        Record Staff requested compliance updates.
+                        Use the resubmission page to upload only the required documents.
+                    </p>
+                )}
 
                 <div className="section-grid">
                     <label className="field-label">Applicant Type</label>
@@ -123,11 +126,15 @@ function ApplicationCopy({ application }) {
                 </div>
 
                 <div className="button-row">
+                    {application.application_status === "notice_to_comply" && (
+                        <Link to="/Application/Resubmit" className="primary-btn">
+                            Open Compliance Resubmission
+                        </Link>
+                    )}
                     <Link to="/" className="secondary-btn">
                         Home
                     </Link>
                 </div>
-
                 {previewUrl && (
                     <div style={{ marginTop: "1rem" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem" }}>
