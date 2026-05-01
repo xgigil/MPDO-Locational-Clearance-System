@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group
 from .models import Application, CustomUser, Applicant, Document, Project, Personnel, Admin, Comment, Report
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
+from .password_rules import validate_password_rules
 
 
 # Serializers accept JSON and convert it to a Python object, and vice versa to be used to communicate with other applications. They also validate the data.
@@ -47,6 +48,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         applicant_data = validated_data.pop("applicant", None)
+        raw_password = validated_data.get("password") or ""
+        pwd_errors = validate_password_rules(raw_password)
+        if pwd_errors:
+            raise serializers.ValidationError({"password": pwd_errors})
         user = CustomUser.objects.create_user(**validated_data)
 
         if applicant_data:
@@ -160,6 +165,10 @@ class InternalUserCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         personnel_roles = validated_data.pop("personnel_roles", [])
         make_admin = validated_data.pop("make_admin", False)
+        raw_password = validated_data.get("password") or ""
+        pwd_errors = validate_password_rules(raw_password)
+        if pwd_errors:
+            raise serializers.ValidationError({"password": pwd_errors})
         with transaction.atomic():
             user = CustomUser.objects.create_user(**validated_data)
             user.is_staff = True
@@ -176,6 +185,26 @@ class InternalUserCreateSerializer(serializers.ModelSerializer):
                 Admin.objects.get_or_create(admin=user)
 
         return user
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        request = self.context["request"]
+        user = request.user
+        current_password = attrs.get("current_password") or ""
+        new_password = attrs.get("new_password") or ""
+
+        if not user.check_password(current_password):
+            raise serializers.ValidationError({"current_password": "Current password is incorrect."})
+
+        pwd_errors = validate_password_rules(new_password)
+        if pwd_errors:
+            raise serializers.ValidationError({"new_password": pwd_errors})
+
+        return attrs
 
 
 class InternalUserSummarySerializer(serializers.ModelSerializer):

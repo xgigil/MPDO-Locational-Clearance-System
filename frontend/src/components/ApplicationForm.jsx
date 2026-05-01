@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api";
-import "../styles/Application.css";
 
 const OPTIONAL_DOCUMENTS = [
     { key: "deed_of_sale", label: "Deed of Sale" },
@@ -107,13 +106,13 @@ function FileDropzone({ label, file, onFileChange, required = false }) {
     };
 
     return (
-        <div className="dropzone-wrapper">
-            <label className="field-label">
+        <label className="wiz-label">
+            <span>
                 {label}
                 {required ? " *" : ""}
-            </label>
+            </span>
             <div
-                className={`dropzone ${isDragging ? "dragging" : ""}`}
+                className={`dropzone ${isDragging ? "is-dragover" : ""}`}
                 onDragOver={(event) => {
                     event.preventDefault();
                     setIsDragging(true);
@@ -128,14 +127,12 @@ function FileDropzone({ label, file, onFileChange, required = false }) {
                     onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
                 />
                 {file ? (
-                    <p className="dropzone-file">{file.name}</p>
+                    <div className="dropzone-text">{file.name}</div>
                 ) : (
-                    <p className="dropzone-placeholder">
-                        Drag and drop a PDF here, or click to browse.
-                    </p>
+                    <div className="dropzone-text">Drag and drop a PDF here, or click to browse.</div>
                 )}
             </div>
-        </div>
+        </label>
     );
 }
 
@@ -165,6 +162,16 @@ function ApplicationForm({ onSubmitted }) {
     }, [goesToAbsoluteOwner]);
 
     const visibleStep = stepLabels[step];
+
+    const totalSteps = stepLabels.length;
+    const stepTitle =
+        visibleStep === "Applicant Information"
+            ? "Applicant Information"
+            : visibleStep === "Absolute Owner Information"
+              ? "Absolute Owner Information"
+              : visibleStep === "Project Details"
+                ? "Project Details"
+                : "Upload Required Documents";
 
     const setField = (field, value) => {
         setForm((prev) => ({ ...prev, [field]: value }));
@@ -301,323 +308,421 @@ function ApplicationForm({ onSubmitted }) {
     };
 
     return (
-        <div className="application-page">
-            <div className="application-card">
-                <h1>Application Form</h1>
-                <p className="step-indicator">
-                    Step {step + 1} of {stepLabels.length}: {visibleStep}
-                </p>
-
-                {visibleStep === "Applicant Information" && (
-                    <div className="section-grid">
-                        <label className="field-label">Applicant Type</label>
-                        <select
-                            value={form.applicant_type}
-                            onChange={(event) => setField("applicant_type", event.target.value)}
-                        >
-                            <option value="Individual">Individual</option>
-                            <option value="Corporation">Corporation</option>
-                        </select>
-
-                        <label className="field-label">First Name</label>
-                        <input
-                            value={form.first_name}
-                            onChange={(event) => setField("first_name", event.target.value)}
-                        />
-
-                        <label className="field-label">Last Name</label>
-                        <input
-                            value={form.last_name}
-                            onChange={(event) => setField("last_name", event.target.value)}
-                        />
-
-                        <label className="field-label">Middle Name</label>
-                        <input
-                            value={form.middle_name}
-                            onChange={(event) => setField("middle_name", event.target.value)}
-                        />
-
-                        <label className="field-label">Suffix</label>
-                        <input
-                            value={form.suffix}
-                            onChange={(event) => setField("suffix", event.target.value)}
-                        />
-
-                        <label className="field-label">House / Street *</label>
-                        <input
-                            value={form.house_street}
-                            onChange={(event) => setField("house_street", event.target.value)}
-                        />
-
-                        <label className="field-label">Barangay *</label>
-                        <select
-                            value={form.barangay}
-                            onChange={(event) => setField("barangay", event.target.value)}
-                        >
-                            {BARANGAY_OPTIONS.map((barangayOption) => (
-                                <option key={barangayOption} value={barangayOption}>
-                                    {barangayOption}
-                                </option>
-                            ))}
-                        </select>
-
-                        <label className="field-label">Right Over Land</label>
-                        <select
-                            value={form.right_over_land}
-                            onChange={(event) => setField("right_over_land", event.target.value)}
-                        >
-                            <option value="Owner">Owner</option>
-                            <option value="Leased">Leased</option>
-                            <option value="NotLot_Owner">Not Lot Owner</option>
-                        </select>
-
-                        {form.applicant_type === "Corporation" && (
-                            <>
-                                <label className="field-label">Corporation Name</label>
-                                <input
-                                    value={form.corp_name}
-                                    onChange={(event) => setField("corp_name", event.target.value)}
-                                />
-
-                                <label className="field-label">Corporation Address</label>
-                                <input
-                                    value={form.corp_address}
-                                    onChange={(event) => setField("corp_address", event.target.value)}
-                                />
-
-                                <label className="field-label">Corporation Telephone</label>
-                                <input
-                                    value={form.corp_telephone}
-                                    onChange={(event) => setField("corp_telephone", event.target.value)}
-                                />
-                            </>
-                        )}
-                    </div>
-                )}
-
-                {visibleStep === "Absolute Owner Information" && (
-                    <div className="section-grid">
-                        <label className="field-label">First Name of Absolute Owner</label>
-                        <input
-                            value={form.absoluteowner_first_name}
-                            onChange={(event) =>
-                                setField("absoluteowner_first_name", event.target.value)
-                            }
-                        />
-
-                        <label className="field-label">Last Name of Absolute Owner</label>
-                        <input
-                            value={form.absoluteowner_last_name}
-                            onChange={(event) =>
-                                setField("absoluteowner_last_name", event.target.value)
-                            }
-                        />
-
-                        <label className="field-label">Middle Initial of Absolute Owner</label>
-                        <input
-                            value={form.absoluteowner_middle_name}
-                            onChange={(event) =>
-                                setField("absoluteowner_middle_name", event.target.value)
-                            }
-                        />
-
-                        <label className="field-label">Suffix of Absolute Owner</label>
-                        <input
-                            value={form.absoluteowner_suffix}
-                            onChange={(event) =>
-                                setField("absoluteowner_suffix", event.target.value)
-                            }
-                        />
-                    </div>
-                )}
-
-                {visibleStep === "Project Details" && (
-                    <div className="section-grid">
-                        <label className="field-label">Project Name</label>
-                        <input
-                            value={form.project_title}
-                            onChange={(event) => setField("project_title", event.target.value)}
-                        />
-
-                        <label className="field-label">Project Type</label>
-                        <input
-                            value={form.project_type}
-                            onChange={(event) => setField("project_type", event.target.value)}
-                        />
-
-                        <label className="field-label">Project Nature *</label>
-                        <select
-                            value={form.project_nature}
-                            onChange={(event) => setField("project_nature", event.target.value)}
-                        >
-                            {PROJECT_NATURE_OPTIONS.map((natureOption) => (
-                                <option key={natureOption} value={natureOption}>
-                                    {natureOption}
-                                </option>
-                            ))}
-                        </select>
-
-                        <label className="field-label">Project Tenure *</label>
-                        <select
-                            value={form.project_tenure}
-                            onChange={(event) => setField("project_tenure", event.target.value)}
-                        >
-                            {PROJECT_TENURE_OPTIONS.map((tenureOption) => (
-                                <option key={tenureOption} value={tenureOption}>
-                                    {tenureOption}
-                                </option>
-                            ))}
-                        </select>
-
-                        <label className="field-label">Project Cost *</label>
-                        <input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={form.project_cost}
-                            onChange={(event) => setField("project_cost", event.target.value)}
-                        />
-
-                        <label className="field-label">Project Address *</label>
-                        <input
-                            value={form.project_address}
-                            onChange={(event) => setField("project_address", event.target.value)}
-                        />
-
-                        <label className="field-label">Project Barangay *</label>
-                        <select
-                            value={form.project_barangay}
-                            onChange={(event) => setField("project_barangay", event.target.value)}
-                        >
-                            {BARANGAY_OPTIONS.map((barangayOption) => (
-                                <option key={barangayOption} value={barangayOption}>
-                                    {barangayOption}
-                                </option>
-                            ))}
-                        </select>
-
-                        <label className="field-label">Area of Lot (sqm) *</label>
-                        <input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={form.area_lot}
-                            onChange={(event) => setField("area_lot", event.target.value)}
-                        />
-
-                        <label className="field-label">Area of Improvement (sqm) *</label>
-                        <input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={form.area_improvement}
-                            onChange={(event) => setField("area_improvement", event.target.value)}
-                        />
-
-                        <label className="field-label">Area of Building (sqm) *</label>
-                        <input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={form.area_bldg}
-                            onChange={(event) => setField("area_bldg", event.target.value)}
-                        />
-
-                        <label className="field-label">Existing Use of Lot *</label>
-                        <select
-                            value={form.existing_use}
-                            onChange={(event) => setField("existing_use", event.target.value)}
-                        >
-                            {EXISTING_USE_OPTIONS.map((useOption) => (
-                                <option key={useOption} value={useOption}>
-                                    {useOption}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                )}
-
-                {visibleStep === "Upload Required Documents" && (
-                    <div className="section-grid">
-                        <p className="helper-text">
-                            Based on the README flow, all required PDFs below must be uploaded.
-                        </p>
-                        {REQUIRED_DOCUMENTS.map((doc) => (
-                            <FileDropzone
-                                key={doc.key}
-                                label={doc.label}
-                                file={documents[doc.key]}
-                                required
-                                onFileChange={(file) =>
-                                    setDocuments((prev) => ({ ...prev, [doc.key]: file }))
-                                }
-                            />
-                        ))}
-
-                        {shouldShowOptionalDocuments && (
-                            <>
-                                <div className="optional-docs">
-                                    <h3>Optional Documents</h3>
-                                    {OPTIONAL_DOCUMENTS.map((doc) => (
-                                        <label className="checkbox-item" key={doc.key}>
-                                            <input
-                                                type="checkbox"
-                                                checked={optionalSelections.includes(doc.key)}
-                                                onChange={() => handleOptionalToggle(doc.key)}
-                                            />
-                                            <span>{doc.label}</span>
-                                        </label>
-                                    ))}
+        <main>
+            <div className="container wizard-wrap">
+                <div className="wizard-shell">
+                    <aside className="wizard-left" aria-label="Application steps">
+                        {stepLabels.map((label, idx) => {
+                            const done = idx < step;
+                            const active = idx === step;
+                            return (
+                                <div key={label} className="wizard-section">
+                                    <div
+                                        className={[
+                                            "wizard-dot",
+                                            active ? "wizard-dot--active" : "",
+                                            done ? "wizard-dot--done" : "",
+                                        ]
+                                            .filter(Boolean)
+                                            .join(" ")}
+                                        aria-hidden="true"
+                                    >
+                                        {idx + 1}
+                                    </div>
+                                    <div>
+                                        <div className="wizard-section-title">{label}</div>
+                                        <div className="wizard-section-sub">
+                                            {active ? "In progress" : done ? "Completed" : "Pending"}
+                                        </div>
+                                    </div>
                                 </div>
+                            );
+                        })}
+                    </aside>
 
-                                {visibleOptionalDocuments.map((doc) => (
-                                    <FileDropzone
-                                        key={doc.key}
-                                        label={doc.label}
-                                        file={documents[doc.key]}
-                                        onFileChange={(file) =>
-                                            setDocuments((prev) => ({ ...prev, [doc.key]: file }))
-                                        }
-                                        required
-                                    />
-                                ))}
-                            </>
-                        )}
-                    </div>
-                )}
+                    <section className="wizard-card" aria-label="Application form">
+                        <div className="wizard-card-top">
+                            <div>
+                                <div className="wizard-card-title">Application Form</div>
+                                <div className="wizard-card-step">
+                                    Step {step + 1} of {totalSteps}: {stepTitle}
+                                </div>
+                            </div>
+                            <Link to="/" className="wizard-close" aria-label="Close application form">
+                                ×
+                            </Link>
+                        </div>
 
-                {message && <p className="status-message">{message}</p>}
+                        <div className="wizard-form">
+                            {visibleStep === "Applicant Information" && (
+                                <div className="wizard-step-content is-active" data-step="1">
+                                    <div className="wiz-grid-2">
+                                        <label className="wiz-label">
+                                            <span>Applicant Type</span>
+                                            <select
+                                                value={form.applicant_type}
+                                                onChange={(event) => setField("applicant_type", event.target.value)}
+                                            >
+                                                <option value="Individual">Individual</option>
+                                                <option value="Corporation">Corporation</option>
+                                            </select>
+                                        </label>
 
-                <div className="button-row">
-                    <Link to="/" className="secondary-btn">
-                        Home
-                    </Link>
-                    {step > 0 && (
-                        <button type="button" className="secondary-btn" onClick={handleBack}>
-                            Back
-                        </button>
-                    )}
-                    {step < stepLabels.length - 1 ? (
-                        <button
-                            type="button"
-                            className="primary-btn"
-                            onClick={handleNext}
-                        >
-                            Next
-                        </button>
-                    ) : (
-                        <button
-                            type="button"
-                            className="primary-btn"
-                            onClick={handleSubmit}
-                            disabled={submitting}
-                        >
-                            {submitting ? "Submitting..." : "Submit Application"}
-                        </button>
-                    )}
+                                        <label className="wiz-label">
+                                            <span>Right Over Land</span>
+                                            <select
+                                                value={form.right_over_land}
+                                                onChange={(event) => setField("right_over_land", event.target.value)}
+                                            >
+                                                <option value="Owner">Owner</option>
+                                                <option value="Leased">Leased</option>
+                                                <option value="NotLot_Owner">Not Lot Owner</option>
+                                            </select>
+                                        </label>
+                                    </div>
+
+                                    <div className="wiz-grid-2">
+                                        <label className="wiz-label">
+                                            <span>First Name *</span>
+                                            <input
+                                                value={form.first_name}
+                                                onChange={(event) => setField("first_name", event.target.value)}
+                                            />
+                                        </label>
+                                        <label className="wiz-label">
+                                            <span>Last Name *</span>
+                                            <input
+                                                value={form.last_name}
+                                                onChange={(event) => setField("last_name", event.target.value)}
+                                            />
+                                        </label>
+                                    </div>
+
+                                    <div className="wiz-grid-2">
+                                        <label className="wiz-label">
+                                            <span>Middle Name</span>
+                                            <input
+                                                value={form.middle_name}
+                                                onChange={(event) => setField("middle_name", event.target.value)}
+                                            />
+                                        </label>
+                                        <label className="wiz-label">
+                                            <span>Suffix</span>
+                                            <input value={form.suffix} onChange={(event) => setField("suffix", event.target.value)} />
+                                        </label>
+                                    </div>
+
+                                    <label className="wiz-label">
+                                        <span>House / Street *</span>
+                                        <input
+                                            value={form.house_street}
+                                            onChange={(event) => setField("house_street", event.target.value)}
+                                        />
+                                    </label>
+
+                                    <label className="wiz-label">
+                                        <span>Barangay *</span>
+                                        <select
+                                            value={form.barangay}
+                                            onChange={(event) => setField("barangay", event.target.value)}
+                                        >
+                                            {BARANGAY_OPTIONS.map((barangayOption) => (
+                                                <option key={barangayOption} value={barangayOption}>
+                                                    {barangayOption}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </label>
+
+                                    {form.applicant_type === "Corporation" && (
+                                        <div className="wiz-composite">
+                                            <div className="wiz-bullet-title">Corporation Details</div>
+                                            <label className="wiz-label">
+                                                <span>Corporation Name *</span>
+                                                <input
+                                                    value={form.corp_name}
+                                                    onChange={(event) => setField("corp_name", event.target.value)}
+                                                />
+                                            </label>
+                                            <label className="wiz-label">
+                                                <span>Corporation Address</span>
+                                                <input
+                                                    value={form.corp_address}
+                                                    onChange={(event) => setField("corp_address", event.target.value)}
+                                                />
+                                            </label>
+                                            <label className="wiz-label">
+                                                <span>Corporation Telephone</span>
+                                                <input
+                                                    value={form.corp_telephone}
+                                                    onChange={(event) => setField("corp_telephone", event.target.value)}
+                                                />
+                                            </label>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {visibleStep === "Absolute Owner Information" && (
+                                <div className="wizard-step-content is-active" data-step="2">
+                                    <div className="wiz-grid-2">
+                                        <label className="wiz-label">
+                                            <span>First Name of Absolute Owner *</span>
+                                            <input
+                                                value={form.absoluteowner_first_name}
+                                                onChange={(event) => setField("absoluteowner_first_name", event.target.value)}
+                                            />
+                                        </label>
+                                        <label className="wiz-label">
+                                            <span>Last Name of Absolute Owner *</span>
+                                            <input
+                                                value={form.absoluteowner_last_name}
+                                                onChange={(event) => setField("absoluteowner_last_name", event.target.value)}
+                                            />
+                                        </label>
+                                    </div>
+
+                                    <div className="wiz-grid-2">
+                                        <label className="wiz-label">
+                                            <span>Middle Initial</span>
+                                            <input
+                                                value={form.absoluteowner_middle_name}
+                                                onChange={(event) => setField("absoluteowner_middle_name", event.target.value)}
+                                            />
+                                        </label>
+                                        <label className="wiz-label">
+                                            <span>Suffix</span>
+                                            <input
+                                                value={form.absoluteowner_suffix}
+                                                onChange={(event) => setField("absoluteowner_suffix", event.target.value)}
+                                            />
+                                        </label>
+                                    </div>
+
+                                    <div className="wiz-note" data-rep-note>
+                                        Optional documents will become available after entering absolute owner details.
+                                    </div>
+                                </div>
+                            )}
+
+                            {visibleStep === "Project Details" && (
+                                <div className="wizard-step-content is-active" data-step="3">
+                                    <label className="wiz-label">
+                                        <span>Project Name *</span>
+                                        <input
+                                            value={form.project_title}
+                                            onChange={(event) => setField("project_title", event.target.value)}
+                                        />
+                                    </label>
+
+                                    <label className="wiz-label">
+                                        <span>Project Type *</span>
+                                        <input
+                                            value={form.project_type}
+                                            onChange={(event) => setField("project_type", event.target.value)}
+                                        />
+                                    </label>
+
+                                    <div className="wiz-grid-2">
+                                        <label className="wiz-label">
+                                            <span>Project Nature *</span>
+                                            <select
+                                                value={form.project_nature}
+                                                onChange={(event) => setField("project_nature", event.target.value)}
+                                            >
+                                                {PROJECT_NATURE_OPTIONS.map((natureOption) => (
+                                                    <option key={natureOption} value={natureOption}>
+                                                        {natureOption}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </label>
+
+                                        <label className="wiz-label">
+                                            <span>Project Tenure *</span>
+                                            <select
+                                                value={form.project_tenure}
+                                                onChange={(event) => setField("project_tenure", event.target.value)}
+                                            >
+                                                {PROJECT_TENURE_OPTIONS.map((tenureOption) => (
+                                                    <option key={tenureOption} value={tenureOption}>
+                                                        {tenureOption}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                    </div>
+
+                                    <div className="wiz-grid-2">
+                                        <label className="wiz-label">
+                                            <span>Project Cost *</span>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                step="0.01"
+                                                value={form.project_cost}
+                                                onChange={(event) => setField("project_cost", event.target.value)}
+                                            />
+                                        </label>
+
+                                        <label className="wiz-label">
+                                            <span>Project Barangay *</span>
+                                            <select
+                                                value={form.project_barangay}
+                                                onChange={(event) => setField("project_barangay", event.target.value)}
+                                            >
+                                                {BARANGAY_OPTIONS.map((barangayOption) => (
+                                                    <option key={barangayOption} value={barangayOption}>
+                                                        {barangayOption}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                    </div>
+
+                                    <label className="wiz-label">
+                                        <span>Project Address *</span>
+                                        <input
+                                            value={form.project_address}
+                                            onChange={(event) => setField("project_address", event.target.value)}
+                                        />
+                                    </label>
+
+                                    <div className="wiz-grid-2">
+                                        <label className="wiz-label">
+                                            <span>Area of Lot (sqm) *</span>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                step="0.01"
+                                                value={form.area_lot}
+                                                onChange={(event) => setField("area_lot", event.target.value)}
+                                            />
+                                        </label>
+                                        <label className="wiz-label">
+                                            <span>Area of Improvement (sqm) *</span>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                step="0.01"
+                                                value={form.area_improvement}
+                                                onChange={(event) => setField("area_improvement", event.target.value)}
+                                            />
+                                        </label>
+                                    </div>
+
+                                    <div className="wiz-grid-2">
+                                        <label className="wiz-label">
+                                            <span>Area of Building (sqm) *</span>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                step="0.01"
+                                                value={form.area_bldg}
+                                                onChange={(event) => setField("area_bldg", event.target.value)}
+                                            />
+                                        </label>
+                                        <label className="wiz-label">
+                                            <span>Existing Use of Lot *</span>
+                                            <select
+                                                value={form.existing_use}
+                                                onChange={(event) => setField("existing_use", event.target.value)}
+                                            >
+                                                {EXISTING_USE_OPTIONS.map((useOption) => (
+                                                    <option key={useOption} value={useOption}>
+                                                        {useOption}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                    </div>
+                                </div>
+                            )}
+
+                            {visibleStep === "Upload Required Documents" && (
+                                <div className="wizard-step-content is-active" data-step="4">
+                                    <div className="wiz-note" style={{ marginBottom: 10 }}>
+                                        Upload all required PDFs below.
+                                    </div>
+                                    {REQUIRED_DOCUMENTS.map((doc) => (
+                                        <FileDropzone
+                                            key={doc.key}
+                                            label={doc.label}
+                                            file={documents[doc.key]}
+                                            required
+                                            onFileChange={(file) => setDocuments((prev) => ({ ...prev, [doc.key]: file }))}
+                                        />
+                                    ))}
+
+                                    {shouldShowOptionalDocuments && (
+                                        <>
+                                            <div className="wiz-bullet-title">Optional Documents</div>
+                                            <div className="wiz-note">
+                                                Select optional documents, then upload PDFs for selected items.
+                                            </div>
+                                            <div className="wizard-review-check">
+                                                {OPTIONAL_DOCUMENTS.map((doc) => (
+                                                    <label key={doc.key}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={optionalSelections.includes(doc.key)}
+                                                            onChange={() => handleOptionalToggle(doc.key)}
+                                                        />
+                                                        <span>{doc.label}</span>
+                                                    </label>
+                                                ))}
+                                            </div>
+
+                                            {visibleOptionalDocuments.map((doc) => (
+                                                <FileDropzone
+                                                    key={doc.key}
+                                                    label={doc.label}
+                                                    file={documents[doc.key]}
+                                                    onFileChange={(file) => setDocuments((prev) => ({ ...prev, [doc.key]: file }))}
+                                                    required
+                                                />
+                                            ))}
+                                        </>
+                                    )}
+
+                                    {message && <div className="wiz-inline-error is-show">{message}</div>}
+                                </div>
+                            )}
+
+                            {message && visibleStep !== "Upload Required Documents" && (
+                                <div className="wiz-inline-error is-show">{message}</div>
+                            )}
+
+                            <div className="wizard-actions">
+                                <button
+                                    type="button"
+                                    className="btn-wiz-back"
+                                    onClick={handleBack}
+                                    disabled={step === 0}
+                                >
+                                    Back
+                                </button>
+
+                                {step < stepLabels.length - 1 ? (
+                                    <button type="button" className="btn-wiz-primary" onClick={handleNext}>
+                                        Next
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        className="btn-wiz-primary is-submit"
+                                        onClick={handleSubmit}
+                                        disabled={submitting}
+                                    >
+                                        {submitting ? "Submitting..." : "Submit Application"}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
 
