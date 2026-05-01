@@ -1,0 +1,164 @@
+/* Requirements page */
+.req-hero{
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(14px, 3vw, 22px);
+}
+
+.req-title{
+  margin: 0;
+  font-size: clamp(24px, 4.8vw, 38px);
+  font-weight: 1000;
+  letter-spacing: .3px;
+}
+
+.req-subtitle{
+  margin: 8px 0 0;
+  max-width: 720px;
+  color: rgba(15,23,42,.70);
+  font-weight: 650;
+  line-height: 1.55;
+}
+
+.req-cta{
+  background: linear-gradient(180deg, #1e6fd8, #0b4a8f);
+  color: #fff;
+  border: 0;
+  box-shadow: 0 10px 18px rgba(11,74,143,.25);
+  white-space: nowrap;
+}
+
+.req-card{
+  background: rgba(255,255,255,.78);
+  border-radius: 14px;
+  box-shadow: 0 14px 28px rgba(0,0,0,.10);
+  border: 1px solid rgba(0,0,0,.05);
+  padding: 18px 18px;
+  overflow: hidden;
+}
+
+.req-card--single{
+  padding: clamp(16px, 3vw, 22px);
+}
+
+.req-card-top{
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.req-badge{
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: rgba(30,111,216,.14);
+  border: 1px solid rgba(30,111,216,.25);
+  color: #0b4a8f;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.req-card-title{
+  font-weight: 900;
+  font-size: 16px;
+  margin: 0;
+}
+
+.req-card-sub{
+  margin-top: 3px;
+  font-size: 12px;
+  font-weight: 650;
+  color: rgba(15,23,42,.65);
+}
+
+.req-list{
+  margin: 10px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.req-list li{
+  color: rgba(15,23,42,.82);
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.req-muted{
+  color: rgba(15,23,42,.55);
+  font-weight: 650;
+  font-size: 12px;
+}
+
+/* Single-container hierarchy */
+.req-sections{
+  margin: 12px 0 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.req-section{
+  padding: 12px 12px;
+  border-radius: 12px;
+  background: rgba(231, 238, 245, .60);
+  border: 1px solid rgba(15,23,42,.06);
+}
+
+.req-section-head{
+  display: grid;
+  gap: 4px;
+  text-align: left;
+}
+
+.req-section-title{
+  font-size: 15px;
+  font-weight: 800;
+  color: rgba(15,23,42,.92);
+}
+
+.req-section-sub{
+  font-size: 12px;
+  font-weight: 650;
+  color: rgba(15,23,42,.65);
+}
+
+/* Keep list aligned nicely inside section */
+.req-section .req-list{
+  margin-top: 10px;
+}
+
+.req-foot{
+  margin-top: 18px;
+}
+
+.req-foot-card{
+  background: rgba(255,255,255,.60);
+  border-radius: 14px;
+  padding: 16px 18px;
+  border: 1px solid rgba(0,0,0,.05);
+}
+
+.req-foot-title{
+  font-weight: 1000;
+  letter-spacing: .2px;
+}
+
+.req-foot-text{
+  margin-top: 6px;
+  color: rgba(15,23,42,.70);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+@media (max-width: 520px){
+  .req-sections{ padding-left: 18px; }
+  .req-section{ padding: 12px 10px; }
+}
+

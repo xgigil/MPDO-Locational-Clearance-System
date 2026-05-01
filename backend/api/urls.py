@@ -25,5 +25,8 @@ urlpatterns = [
     path("user/internal/applications/<int:application_id>/action/", views.InternalApplicationActionView.as_view(), name="internal_application_action"),
     # Streams uploaded PDF bytes for application copy and role queues.
     path("user/internal/documents/<int:document_id>/download/", views.DownloadApplicationDocumentView.as_view(), name="download_application_document"),
+
+    # Authenticated user password change
+    path("user/change-password/", views.ChangePasswordView.as_view(), name="change_password"),
     
 ]
