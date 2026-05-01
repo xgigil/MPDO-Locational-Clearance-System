@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Application from "./pages/Application";
 import ApplicationTracker from "./pages/ApplicationTracker";
@@ -11,6 +11,11 @@ import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
 import InternalHome from "./pages/InternalHome";
 import ProtectedRoute from "./components/ProtectedRoutes";
+import Layout from "./components/Layout.jsx";
+import Requirements from "./pages/Requirements.jsx";
+import Ask from "./pages/Ask.jsx";
+import Settings from "./pages/Settings.jsx";
+import Forgot from "./pages/Forgot.jsx";
 
 function Logout() {
   localStorage.clear();
@@ -27,62 +32,75 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Default landing page */}
-        <Route path="/" element={<Home />} />
+        <Route element={<Layout />}>
+          {/* Default landing page */}
+          <Route path="/" element={<Home />} />
 
-        {/* About us page */}
-        <Route path="/about" element={<AboutUs />} />
+          {/* About us page */}
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/requirements" element={<Requirements />} />
+          <Route path="/ask" element={<Ask />} />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Internal protected area: Application page */}
-        <Route 
-          path="/Application"
-          element={
-            <ProtectedRoute>
-              <Application />
-            </ProtectedRoute>
-          }
-        />
+          {/* Applicant protected area: Application page */}
+          <Route
+            path="/Application"
+            element={
+              <ProtectedRoute>
+                <Application />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Internal protected area: Application tracker page */}
-        <Route 
-          path="/Application/Tracker"
-          element={
-            <ProtectedRoute>
-              <ApplicationTracker />
-            </ProtectedRoute>
-          }
-        />
+          {/* Applicant protected area: Application tracker page */}
+          <Route
+            path="/Application/Tracker"
+            element={
+              <ProtectedRoute>
+                <ApplicationTracker />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/Application/Resubmit"
-          element={
-            <ProtectedRoute>
-              <ApplicantComplianceResubmit />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/Application/Resubmit"
+            element={
+              <ProtectedRoute>
+                <ApplicantComplianceResubmit />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Internal protected dashboard for personnel/admin users */}
-        <Route
-          path="/internal"
-          element={
-            <ProtectedRoute requireInternal>
-              <InternalHome />
-            </ProtectedRoute>
-          }
-        />
+          {/* Internal protected dashboard for personnel/admin users */}
+          <Route
+            path="/internal"
+            element={
+              <ProtectedRoute requireInternal>
+                <InternalHome />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Auth routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/internal/login" element={<InternalLogin />} />
-        <Route path="/logout" element={<Logout />} />
-        <Route path="/register" element={<Register />} />
+          {/* Auth routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/internal/login" element={<InternalLogin />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot" element={<Forgot />} />
 
-        {/* Catch-all */}
-        <Route path="*" element={<NotFound />} />
+          {/* Catch-all */}
+          <Route path="*" element={<NotFound />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
 }
 
-export default App
+export default App;

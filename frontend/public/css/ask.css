@@ -1,0 +1,106 @@
+/* Ask page */
+.ask-wrap{ padding: 18px 0 10px; }
+.ask-shell{
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 20px;
+  background: rgba(255,255,255,.35);
+  padding: 14px;
+  border-radius: 14px;
+}
+.ask-left{
+  background: #0b1a25;
+  color: #fff;
+  border-radius: 14px;
+  padding: 20px 20px 16px;
+  position: relative;
+  overflow: hidden;
+}
+.ask-left-top{
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+.ask-left-sub{
+  font-weight: 650;
+  font-size: 13px;
+  opacity: .92;
+  margin-bottom: 16px;
+}
+.ask-left-item{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+.ask-left-item:first-of-type{ border-top: 0; }
+.ask-left-label{ width: 26px; text-align: center; opacity: .9; }
+.ask-left-value{ font-weight: 700; font-size: 12px; opacity: .92; }
+.ask-left-foot{
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+.ask-left-cta{ color: #f2b247; font-weight: 700; font-size: 13px; }
+
+.ask-right{
+  background: rgba(255,255,255,.85);
+  border-radius: 14px;
+  padding: 18px 18px;
+  box-shadow: 0 16px 30px rgba(0,0,0,.12);
+}
+.ask-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.ask-message{ grid-column: 1 / -1; }
+.ask-subject{ grid-column: 1 / -1; }
+.ask-radio-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-top: 8px;
+}
+.auth-radio{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  font-size: 12px;
+  color: rgba(15,23,42,.75);
+}
+.auth-radio input{ width: 14px; height: 14px; }
+.ask-right textarea{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.18);
+  background: #fff;
+  outline: none;
+}
+.btn-send-message{
+  margin-top: 16px;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 18px;
+  background: #f2b247;
+  color: #0f172a;
+  font-weight: 1000;
+  cursor: pointer;
+  float: right;
+}
+
+@media (max-width: 980px){
+  .ask-shell{ grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px){
+  .ask-grid{ grid-template-columns: 1fr; }
+  .btn-send-message{
+    float: none;
+    width: 100%;
+  }
+}
+

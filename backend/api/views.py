@@ -11,6 +11,8 @@ from .models import Admin as CustomAdmin
 from .models import Application, CustomUser, Document, Personnel, Comment, Report
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from .serializers import ChangePasswordSerializer
+from rest_framework.permissions import IsAuthenticated
 
 # Custom permissions
 class isAdmin(BasePermission):
@@ -563,5 +565,18 @@ class DownloadApplicationDocumentView(generics.GenericAPIView):
         safe_name = document.uploaded_document_name or f"document_{document.document_id}.pdf"
         response["Content-Disposition"] = f'inline; filename="{safe_name}"'
         return response
+
+
+class ChangePasswordView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ChangePasswordSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        new_password = serializer.validated_data["new_password"]
+        request.user.set_password(new_password)
+        request.user.save()
+        return Response({"detail": "Password updated successfully."}, status=status.HTTP_200_OK)
 
 
