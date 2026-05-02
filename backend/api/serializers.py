@@ -253,6 +253,13 @@ class DocumentCopySerializer(serializers.ModelSerializer):
         ]
 
     def get_document_label(self, obj):
+<<<<<<< HEAD
+=======
+        if obj.document_type == "report_document":
+            report = obj.report_set.first()
+            if report:
+                return dict(Report.REVIEW_STATUS_CHOICES).get(report.report_type, report.report_type)
+>>>>>>> eb68380 (for draftsman and authuority)
         return dict(Document.DOCUMENT_TYPE_CHOICES).get(obj.document_type, obj.document_type)
 
     def get_download_url(self, obj):
@@ -366,6 +373,10 @@ class CommentSerializer(serializers.ModelSerializer):
 class InternalApplicationQueueSerializer(serializers.ModelSerializer):
     project = ProjectCopySerializer(read_only=True)
     submitted_by_username = serializers.SerializerMethodField()
+<<<<<<< HEAD
+=======
+    applicant_display_name = serializers.SerializerMethodField()
+>>>>>>> eb68380 (for draftsman and authuority)
     comments = serializers.SerializerMethodField()
     documents = DocumentCopySerializer(source="document_set", many=True, read_only=True)
     compliance_required_document_types = serializers.SerializerMethodField()
@@ -379,7 +390,13 @@ class InternalApplicationQueueSerializer(serializers.ModelSerializer):
             "application_comply",
             "application_completion",
             "application_endorsement",
+<<<<<<< HEAD
             "submitted_by_username",
+=======
+            "applicant_type",
+            "submitted_by_username",
+            "applicant_display_name",
+>>>>>>> eb68380 (for draftsman and authuority)
             "project",
             "comments",
             "documents",
@@ -390,6 +407,16 @@ class InternalApplicationQueueSerializer(serializers.ModelSerializer):
     def get_submitted_by_username(self, obj):
         return obj.submitted_by.username if obj.submitted_by else ""
 
+<<<<<<< HEAD
+=======
+    def get_applicant_display_name(self, obj):
+        if getattr(obj, "applicant_type", None) == "Corporation" and obj.corp_name:
+            return obj.corp_name.strip()
+        parts = [obj.absoluteowner_first_name, obj.absoluteowner_last_name]
+        name = " ".join(p for p in parts if p).strip()
+        return name or (obj.submitted_by.username if obj.submitted_by else "")
+
+>>>>>>> eb68380 (for draftsman and authuority)
     def get_comments(self, obj):
         recent_comments = obj.comment_set.order_by("-comment_timestamp")[:5]
         return CommentSerializer(recent_comments, many=True).data

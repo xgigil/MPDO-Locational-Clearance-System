@@ -274,6 +274,12 @@ function RecordStaffDashboard() {
             ))}
 
             <h4 style={{ marginTop: "1rem" }}>Final Rejected (Review Complete)</h4>
+<<<<<<< HEAD
+=======
+            <p className="helper-text" style={{ marginTop: "0.25rem" }}>
+                Includes applications rejected by the Approving Authority (review finished; status rejected / review complete).
+            </p>
+>>>>>>> eb68380 (for draftsman and authuority)
             {(rejectedCompleteApps ?? []).map((application) => (
                 <div key={`rejected-${application.application_id}`} className="application-card application-copy" style={{ marginTop: "0.75rem" }}>
                     {renderApplicationCopySummary(application)}
