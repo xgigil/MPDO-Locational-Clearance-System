@@ -1,7 +1,11 @@
 from django.contrib.auth.models import Group
 import json
 from django.http import HttpResponse, Http404
+<<<<<<< HEAD
 from django.db.models import Q
+=======
+from django.db.models import Q, Prefetch
+>>>>>>> eb68380 (for draftsman and authuority)
 from rest_framework import generics
 from .serializers import ApplicationCopySerializer, InternalApplicationQueueSerializer, ApplicationSubmissionSerializer, InternalUserCreateSerializer, InternalUserSummarySerializer, UserSerializer, UserTokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission
@@ -332,9 +336,19 @@ class InternalApplicationQueueView(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         # Role-aware queue source used by each role-specific dashboard component.
         role = request.query_params.get("role")
+<<<<<<< HEAD
         queryset = (
             Application.objects.select_related("project", "submitted_by")
             .prefetch_related("document_set", "comment_set")
+=======
+        doc_with_reports = Prefetch(
+            "document_set",
+            queryset=Document.objects.order_by("upload_timestamp").prefetch_related("report_set"),
+        )
+        queryset = (
+            Application.objects.select_related("project", "submitted_by")
+            .prefetch_related(doc_with_reports, "comment_set")
+>>>>>>> eb68380 (for draftsman and authuority)
             .order_by("-application_date")
         )
 
@@ -490,7 +504,55 @@ class InternalApplicationActionView(generics.GenericAPIView):
                 )
             application.application_completion = True
             application.save(update_fields=["application_completion"])
+<<<<<<< HEAD
         elif action in {"upload_gis", "upload_drone", "upload_site", "upload_draftsman_report", "upload_approving_report"}:
+=======
+        elif action == "upload_draftsman_report" and role == Personnel.ROLE_DRAFTSMAN:
+            evaluation_file = request.FILES.get("evaluation_report_file") or request.FILES.get("report_file")
+            locational_clearance_draft_file = request.FILES.get("locational_clearance_draft_file")
+            is_endorsed = str(request.data.get("is_endorsed", "false")).lower() == "true"
+            if not evaluation_file:
+                return Response(
+                    {"detail": "evaluation_report_file (PDF) is required."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if is_endorsed and not locational_clearance_draft_file:
+                return Response(
+                    {
+                        "detail": "locational_clearance_draft_file (PDF) is required when the application is endorsed for MPDC review.",
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if is_endorsed and locational_clearance_draft_file:
+                doc_lc = Document.objects.create(
+                    application=application,
+                    document_type="report_document",
+                    uploaded_document=locational_clearance_draft_file.read(),
+                    uploaded_document_name=locational_clearance_draft_file.name,
+                    uploaded_document_content_type=locational_clearance_draft_file.content_type or "application/pdf",
+                )
+                Report.objects.create(
+                    report_type="loc_clear_draf",
+                    document=doc_lc,
+                    application=application,
+                )
+            doc_eval = Document.objects.create(
+                application=application,
+                document_type="report_document",
+                uploaded_document=evaluation_file.read(),
+                uploaded_document_name=evaluation_file.name,
+                uploaded_document_content_type=evaluation_file.content_type or "application/pdf",
+            )
+            Report.objects.create(
+                report_type="eval_rep",
+                document=doc_eval,
+                application=application,
+            )
+            application.application_endorsement = is_endorsed
+            application.review_status = "approving_authority_review"
+            application.save(update_fields=["application_endorsement", "review_status"])
+        elif action in {"upload_gis", "upload_drone", "upload_site", "upload_approving_report"}:
+>>>>>>> eb68380 (for draftsman and authuority)
             if not report_file or not report_type:
                 return Response(
                     {"detail": "report_file and report_type are required for upload actions."},
@@ -524,11 +586,14 @@ class InternalApplicationActionView(generics.GenericAPIView):
             elif action == "upload_site" and role == Personnel.ROLE_SITE_INSPECTOR:
                 application.review_status = "drafting_review"
                 application.save(update_fields=["review_status"])
+<<<<<<< HEAD
             elif action == "upload_draftsman_report" and role == Personnel.ROLE_DRAFTSMAN:
                 is_endorsed = str(request.data.get("is_endorsed", "false")).lower() == "true"
                 application.application_endorsement = is_endorsed
                 application.review_status = "approving_authority_review"
                 application.save(update_fields=["application_endorsement", "review_status"])
+=======
+>>>>>>> eb68380 (for draftsman and authuority)
             elif action == "upload_approving_report" and role == Personnel.ROLE_APPROVING_AUTHORITY:
                 application.application_status = "accepted"
                 application.review_status = "review_complete"

@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { ACCESS_TOKEN } from "../../constants";
 
+<<<<<<< HEAD
 function ApplicationDocumentsPreview({ documents = [] }) {
+=======
+function ApplicationDocumentsPreview({ documents = [], heading = "Attached Documents" }) {
+>>>>>>> eb68380 (for draftsman and authuority)
     const apiBaseUrl = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
     const [previewUrl, setPreviewUrl] = useState("");
     const [previewName, setPreviewName] = useState("");
@@ -47,7 +51,11 @@ function ApplicationDocumentsPreview({ documents = [] }) {
 
     return (
         <div style={{ marginTop: "0.5rem" }}>
+<<<<<<< HEAD
             <p style={{ margin: "0.25rem 0" }}>Attached Documents:</p>
+=======
+            <p style={{ margin: "0.25rem 0" }}>{heading}:</p>
+>>>>>>> eb68380 (for draftsman and authuority)
             {documents.length === 0 ? (
                 <p className="helper-text" style={{ margin: "0.25rem 0" }}>No uploaded documents yet.</p>
             ) : (
